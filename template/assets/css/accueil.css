@@ -1,0 +1,19 @@
+/*******************************
+Version : 1.0.0.0
+Revised : vendredi 17 novembre 2017, 12:51:48 (UTC+0100)
+*******************************/
+
+.bgaccueil {
+	background: url('../img/voyager-assets.jpg') no-repeat 100%/100%;
+	background-size: cover;
+}
+
+.carousel-control-prev-icon, .carousel-control-next-icon {
+    height: 100px;
+    width: 100px;
+    outline: black;
+    background-color: grey;
+    background-size: 100%, 100%;
+    border-radius: 50%;
+    border: 1px solid black;
+}

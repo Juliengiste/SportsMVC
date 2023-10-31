@@ -1,0 +1,35 @@
+RewriteEngine On
+
+# Force UTF-8 sur tous les fichiers
+AddDefaultCharset UTF-8
+
+### Directives de réécriture Core (ne pas modifier)
+
+# moteur interne
+RewriteRule ^Core/(.+) - [L,NC]
+RewriteRule ^template/(.+) - [L,NC]
+RewriteRule ^data/(.+)  - [L,NC]
+
+# Robots SpiderWeb
+#RewriteRule ^sitemap.xml /kernel/gensitemap.php [L,NC]
+RewriteRule ^robots.txt - [L,NC]
+
+###
+
+### Directives de réécritures Pages Front-Office statiques
+
+# Générales
+RewriteRule ^$ index.php [L]
+
+# Directives de réécriture Pages Front-Office dynamiques
+#RewriteRule ^([a-z0-9\-]+)/([a-z0-9\-]+)/([a-z0-9\-]+)/([0-9]+)$ index.php?page=$1&sspage=$2&detail=$3&id=$4 [L,NC,QSA]
+#RewriteRule ^([a-z0-9\-]+)/([a-z0-9\-]+)/([0-9\-]+)/$ index.php?page=$1&sspage=$2&w=$3 [L,NC,QSA]
+#RewriteRule ^([a-z0-9\-]+)/([a-z0-9\-]+)/([a-z0-9\-]+)$ index.php?page=$1&sspage=$2&detail=$3 [L,NC,QSA]
+#RewriteRule ^([a-z0-9\-]+)/([a-z0-9\-]+)/([a-z0-9\-]+)/([a-z0-9\-]+)/$ index.php?page=$1&sspage=$2&detail=$3&w=$4 [L,NC,QSA]
+
+RewriteRule ^([a-z0-9\-]+)/([0-9]+)/?$ index.php?page=$1&id=$2 [L,NC,QSA]
+
+#RewriteRule ^([a-z0-9\-]+)/([a-z0-9\-]+)/?$ 		index.php?page=$1&sspage=$2 [L,NC,QSA]
+RewriteRule ^([a-z0-9\-]+)/?$				index.php?page=$1 [L,NC,QSA]
+
+ErrorDocument 404 /404/
