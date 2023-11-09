@@ -297,157 +297,164 @@ else{
 
 <script type="text/javascript">
 console.log('hey console');
-var form1 = $('#form-1');
-var form2 = $('#form-2');
-var form3 = $('#form-3');
-var form4 = $('#form-4');
 
-var progress = $('#progress');
+$(document).ready(function() {
+  $('button.sport').on('click', function() {
+    
+    var form1 = $('#form-1');
+    var form2 = $('#form-2');
+    var form3 = $('#form-3');
+    var form4 = $('#form-4');
 
-function getlistdispo(sport){
-  switch (sport){
-    <?
-    $o=$pdo->prepare('SELECT * FROM `sport`;');
-    $o->execute();
-    while ($donnees = $o->fetch(PDO::FETCH_ASSOC)) {
-      ?>
-      case ('<?=$donnees['idsport'];?>'):
+    var progress = $('#progress');
+
+    function getlistdispo(sport){
+      switch (sport){
         <?
-        $affichage='';
-        $p=$pdo->prepare('SELECT * FROM `anneescolaire` WHERE `date_debut`< NOW() AND `date_fin`> NOW();');
-        $p->execute();
-        $data = $p->fetch(PDO::FETCH_ASSOC);
-        $annee = $data['idanneescolaire'];
-        $q=$pdo->prepare('SELECT * FROM `disponibilite` JOIN `autorise` ON `disponibilite`.`iddisponibilite`=`autorise`.`disponibilite_iddisponibilite` JOIN `lieu` ON `disponibilite`.`lieu` = `lieu`.`idlieu` WHERE `annee_scolaire`=:annee AND `sport_idsport`=:idsport AND `duree` IS NOT NULL;');
-        $q->bindValue(":annee", $annee, PDO::PARAM_INT);
-        $q->bindValue(":idsport", $donnees['idsport'], PDO::PARAM_INT);
-        $q->execute();
-        while ($dataq = $q->fetch(PDO::FETCH_ASSOC)) {
-        $minute = $dataq['duree'];
-        $affichage .='<div>Le '.ucwords($dataq['jour_semaine']).' de '.date("H:i",strtotime($dataq['heure_debut'])).' à '.date("H:i",strtotime($dataq['heure_debut']."+$minute minutes")).' au '.$dataq['nom_lieu'].'</div>';
+        $o=$pdo->prepare('SELECT * FROM `sport`;');
+        $o->execute();
+        while ($donnees = $o->fetch(PDO::FETCH_ASSOC)) {
+          ?>
+          case ('<?=$donnees['idsport'];?>'):
+            <?
+            $affichage='';
+            $p=$pdo->prepare('SELECT * FROM `anneescolaire` WHERE `date_debut`< NOW() AND `date_fin`> NOW();');
+            $p->execute();
+            $data = $p->fetch(PDO::FETCH_ASSOC);
+            $annee = $data['idanneescolaire'];
+            $q=$pdo->prepare('SELECT * FROM `disponibilite` JOIN `autorise` ON `disponibilite`.`iddisponibilite`=`autorise`.`disponibilite_iddisponibilite` JOIN `lieu` ON `disponibilite`.`lieu` = `lieu`.`idlieu` WHERE `annee_scolaire`=:annee AND `sport_idsport`=:idsport AND `duree` IS NOT NULL;');
+            $q->bindValue(":annee", $annee, PDO::PARAM_INT);
+            $q->bindValue(":idsport", $donnees['idsport'], PDO::PARAM_INT);
+            $q->execute();
+            while ($dataq = $q->fetch(PDO::FETCH_ASSOC)) {
+            $minute = $dataq['duree'];
+            $affichage .='<div>Le '.ucwords($dataq['jour_semaine']).' de '.date("H:i",strtotime($dataq['heure_debut'])).' à '.date("H:i",strtotime($dataq['heure_debut']."+$minute minutes")).' au '.$dataq['nom_lieu'].'</div>';
+            }
+            ?>
+            $('#creneau').html('<?=$affichage?>');
+            <?
+            ?>
+          break;
+        <?
         }
         ?>
-        $('#creneau').html('<?=$affichage?>');
+      }
+    }
+
+    function affichageformdate(reservation){
+      var formdate = $('#date');
+      var div_date = $('#form_div_date');
+      var ladate=new Date()
+      switch (reservation){
+        case ('unit'):
+          formdate.html('<input type="date" name="date_cours" id="date_cours"></input>');
+          div_date.html('<input type="hidden" name="form_date_cours" id="form_date_cours"></input>');
+          var today = ladate.getFullYear()+"-"+("0"+(ladate.getMonth()+1)).slice(-2)+"-"+("0"+ladate.getDate()).slice(-2);
+          $('#date_cours').val(today);
+        break;
+        case('multi'):
+          formdate.html('<input type="date" name="date_debut" id="date_debut"></input><input type="date" name="date_fin" id="date_fin"></input><select class="form-control" id="js" name="js"><option disabled selected>Choisissez le jour</option><option value="lundi">Lundi</option><option value="mardi">Mardi</option><option value="mercredi">Mercredi</option><option value="jeudi">Jeudi</option><option value="vendredi">Vendredi</option><option value="samedi">Samedi</option><option value="dimanche">Dimanche</option></select>');
+          div_date.html('<input type="hidden" name="form_date_debut" id="form_date_debut"></input><input type="hidden" name="form_date_fin" id="form_date_fin"></input><input type="hidden" name="form_jour_semaine" id="form_jour_semaine"></input>');
+          var today = ladate.getFullYear()+"-"+("0"+(ladate.getMonth()+1)).slice(-2)+"-"+("0"+ladate.getDate()).slice(-2);
+          $('#date_debut').val(today);
+        break;
+      }
+    }
+
+    function affichedate(date){
+      return ("0"+date.getDate()).slice(-2)+"/"+("0"+(date.getMonth()+1)).slice(-2)+"/"+date.getFullYear();
+    }
+
+    function resume(){
+      switch($('#form_sport').val()){
         <?
+        foreach ($listsport as $sport) {
+          ?>
+          case('<?=$sport->idsport();?>'):
+            var nomsport = "<?=$sport->nom_sport();?>";
+          break;
+        <?
+        }
         ?>
-      break;
-    <?
+      }
+
+      var div = $('#resume');
+      if($('#form_reservation').val()=="multi"){
+        var datedeb = new Date($('#form_date_debut').val());
+        var datefin = new Date($('#form_date_fin').val());
+        alert(datedeb);
+        var text = "<p>Du "+affichedate(datedeb)+" au "+affichedate(datefin)+", le "+$('#form_jour_semaine').val()+" cours de "+nomsport+" à "+$('#form_heure_debut').val()+" d'une durée de "+$('#form_duree').val()+" minutes</p>";
+      }
+      else{
+        var datecours = new Date($('#form_date_cours').val());
+        var text = "<p>Le "+affichedate(datecours)+" cours de "+nomsport+" à "+$('#form_heure_debut').val()+" d'une durée de "+$('#form_duree').val()+" minutes</p>";
+      }
+      div.html(text);
     }
-    ?>
-  }
-}
 
-function affichageformdate(reservation){
-  var formdate = $('#date');
-  var div_date = $('#form_div_date');
-  var ladate=new Date()
-  switch (reservation){
-    case ('unit'):
-      formdate.html('<input type="date" name="date_cours" id="date_cours"></input>');
-      div_date.html('<input type="hidden" name="form_date_cours" id="form_date_cours"></input>');
-      var today = ladate.getFullYear()+"-"+("0"+(ladate.getMonth()+1)).slice(-2)+"-"+("0"+ladate.getDate()).slice(-2);
-      $('#date_cours').val(today);
-    break;
-    case('multi'):
-      formdate.html('<input type="date" name="date_debut" id="date_debut"></input><input type="date" name="date_fin" id="date_fin"></input><select class="form-control" id="js" name="js"><option disabled selected>Choisissez le jour</option><option value="lundi">Lundi</option><option value="mardi">Mardi</option><option value="mercredi">Mercredi</option><option value="jeudi">Jeudi</option><option value="vendredi">Vendredi</option><option value="samedi">Samedi</option><option value="dimanche">Dimanche</option></select>');
-      div_date.html('<input type="hidden" name="form_date_debut" id="form_date_debut"></input><input type="hidden" name="form_date_fin" id="form_date_fin"></input><input type="hidden" name="form_jour_semaine" id="form_jour_semaine"></input>');
-      var today = ladate.getFullYear()+"-"+("0"+(ladate.getMonth()+1)).slice(-2)+"-"+("0"+ladate.getDate()).slice(-2);
-      $('#date_debut').val(today);
-    break;
-  }
-}
-
-function affichedate(date){
-  return ("0"+date.getDate()).slice(-2)+"/"+("0"+(date.getMonth()+1)).slice(-2)+"/"+date.getFullYear();
-}
-
-function resume(){
-  switch($('#form_sport').val()){
-    <?
-    foreach ($listsport as $sport) {
-      ?>
-      case('<?=$sport->idsport();?>'):
-        var nomsport = "<?=$sport->nom_sport();?>";
-      break;
-    <?
+    function form1toform2(sport){
+      form1.css("left" ,  '-45rem');
+      form2.css("left" , '4rem');
+      progress.css("width" , '16.5rem');
+      // récupérer la valeur de sport
+      $('#form_sport').val(sport.value);
     }
-    ?>
-  }
-
-  var div = $('#resume');
-  if($('#form_reservation').val()=="multi"){
-    var datedeb = new Date($('#form_date_debut').val());
-    var datefin = new Date($('#form_date_fin').val());
-    alert(datedeb);
-    var text = "<p>Du "+affichedate(datedeb)+" au "+affichedate(datefin)+", le "+$('#form_jour_semaine').val()+" cours de "+nomsport+" à "+$('#form_heure_debut').val()+" d'une durée de "+$('#form_duree').val()+" minutes</p>";
-  }
-  else{
-    var datecours = new Date($('#form_date_cours').val());
-    var text = "<p>Le "+affichedate(datecours)+" cours de "+nomsport+" à "+$('#form_heure_debut').val()+" d'une durée de "+$('#form_duree').val()+" minutes</p>";
-  }
-  div.html(text);
-}
-
-function form1toform2(sport){
-  form1.css("left" ,  '-45rem');
-  form2.css("left" , '4rem');
-  progress.css("width" , '16.5rem');
-  // récupérer la valeur de sport
-  $('#form_sport').val(sport.value);
-}
 
 
-function form2toform1() {
-    form1.css('left', '4rem');
-    form2.css('left','45rem');
-    progress.css('width', '7.5rem');
-}
-
-function form2toform3(reservation) {
-    form2.css('left', '-45rem');
-    form3.css('left', '4rem');
-    progress.css('width', '25rem')
-    // récupérer la valeur de reservation
-    $('#form_reservation').val(reservation.value);
-    getlistdispo($('#form_sport').val());
-    affichageformdate($('#form_reservation').val());
-}
-
-function form3toform2() {
-    form2.css('left', '4rem');
-    form3.css('left', '45rem');
-    progress.css('width', '16.5rem')
-
-}
-
-function form3toform4() {
-    form3.css('left', '-45rem');
-    form4.css('left', '4rem');
-    progress.css('width', '36rem');
-    if($('#form_reservation').val()=="multi"){
-      $('#form_date_debut').val($('#date_debut').val());
-      $('#form_date_fin').val($('#date_fin').val());
-      $('#form_jour_semaine').val($('#js').val());
-    }else{
-      $('#form_date_cours').val($('#date_cours').val());
+    function form2toform1() {
+        form1.css('left', '4rem');
+        form2.css('left','45rem');
+        progress.css('width', '7.5rem');
     }
-    $('#form_heure_debut').val($('#heure_debut').val());
-    $('#form_duree').val($('#duree').val());
-    resume();
-}
 
-function form4toform3() {
-    form3.css('left', '4rem');
-    form4.css('left', '45rem');
-    progress.css('width', '25rem')
+    function form2toform3(reservation) {
+        form2.css('left', '-45rem');
+        form3.css('left', '4rem');
+        progress.css('width', '25rem')
+        // récupérer la valeur de reservation
+        $('#form_reservation').val(reservation.value);
+        getlistdispo($('#form_sport').val());
+        affichageformdate($('#form_reservation').val());
+    }
 
-}
+    function form3toform2() {
+        form2.css('left', '4rem');
+        form3.css('left', '45rem');
+        progress.css('width', '16.5rem')
 
-function updateTextInput(val) {
-  document.getElementById('textInput').value=val; 
-}
+    }
 
-// it's not fair to say that i completely made this codepen from myself, i learned  this form  tube tutorial video.
-// Linking down the channel name
- // https://youtube.com/c/EasyTutorialsVideo
+    function form3toform4() {
+        form3.css('left', '-45rem');
+        form4.css('left', '4rem');
+        progress.css('width', '36rem');
+        if($('#form_reservation').val()=="multi"){
+          $('#form_date_debut').val($('#date_debut').val());
+          $('#form_date_fin').val($('#date_fin').val());
+          $('#form_jour_semaine').val($('#js').val());
+        }else{
+          $('#form_date_cours').val($('#date_cours').val());
+        }
+        $('#form_heure_debut').val($('#heure_debut').val());
+        $('#form_duree').val($('#duree').val());
+        resume();
+    }
+
+    function form4toform3() {
+        form3.css('left', '4rem');
+        form4.css('left', '45rem');
+        progress.css('width', '25rem')
+
+    }
+
+    function updateTextInput(val) {
+      document.getElementById('textInput').value=val; 
+    }
+
+    // it's not fair to say that i completely made this codepen from myself, i learned  this form  tube tutorial video.
+    // Linking down the channel name
+     // https://youtube.com/c/EasyTutorialsVideo
+
+     });
+});
 </script>

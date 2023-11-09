@@ -1,4 +1,7 @@
 <style type="text/css">
+.sidebar-wrapper {
+  margin-top: 150px;
+}
  @keyframes swing {
   0% {
     transform: rotate(0deg);
@@ -40,7 +43,7 @@
   }
 }
 body {
-  font-size: 0.9rem;
+     font-size: 0.9rem;
 }
 .page-wrapper .sidebar-wrapper,
 .sidebar-wrapper .sidebar-brand > a,
@@ -483,6 +486,8 @@ body {
 
 </style>
 <?
+$id = \Core\Classes\Utils::secureGet('id');
+$smanager = new Core\Models\SportManager($pdo);
 
 if(isset($_SESSION[SHORTNAME.'_user'])) $me = $_SESSION[SHORTNAME.'_user'];
 if(isset($me)){
@@ -501,7 +506,7 @@ if(isset($me)){
       </div>
       <div class="sidebar-header">
         <div class="user-pic">
-          <img class="img-responsive img-rounded" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg" alt="User picture">
+          <img class="img-responsive img-rounded" src="https://img.freepik.com/icones-gratuites/joueur_318-400459.jpg" alt="User picture">
         </div>
         <div class="user-info">
           <span class="user-name"><?=$me->prenom()?>
@@ -582,14 +587,21 @@ if(isset($me)){
             <div class="sidebar-submenu">
               <ul>
                 <li>
-                  <a href="sports/1">Badminton</a>
+                  <a href="sports/">Liste des sports</a>
                 </li>
-                <li>
-                  <a href="sports/2">Tennis de table</a>
-                </li>
-                <li>
-                  <a href="sports/3">Volley</a>
-                </li>
+                <? 
+                  $sort = \Core\Classes\Utils::secureGet('sort',"idsport");
+                  $tri = \Core\Classes\Utils::secureGet('tri',"asc");
+                  $sportList = $smanager->getList($sort,$tri,"sport");
+                    if(is_array($sportList)){
+                      foreach ($sportList as $sport) {
+                        ?>
+                        <li>
+                         <a href="sports/<?=$sport->idsport()?>"><?=$sport->nom_sport()?></a>
+                        </li>     
+                        <?
+                      }
+                    }?>           
               </ul>
             </div>
           </li>

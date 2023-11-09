@@ -18,8 +18,24 @@
 <?php
 $id = \Core\Classes\Utils::secureGet('id');
 $new = \Core\Classes\Utils::secureGet('new');
+$supp = \Core\Classes\Utils::secureGet('supp');
 $smanager = new Core\Models\SportManager($pdo);
 $lmanager = new Core\Models\LieuManager($pdo);
+
+if (isset($supp)){
+	$smanager->deleteSport($id);
+	$id = NULL;
+	$supp = NULL;
+}
+
+if ((count($_POST) != 0 )&&(($_POST["id"]=="NULL"))){
+	$newsport = $smanager->new("sport");
+	$newsport->setNom_sport($_POST['nom_sport']);
+	$newsport->setDescription($_POST['description']);
+	$affichernewSport = $smanager->addSport($newsport);
+	$id = NULL;
+	$new = NULL;
+}
 
 /*******************************
 Version : 1.0.0.0
@@ -27,11 +43,11 @@ Revised : jeudi 19 avril 2018, 16:49:24 (UTC+0200)
 *******************************/
 if(isset($_SESSION[SHORTNAME.'_user'])) $me = $_SESSION[SHORTNAME.'_user'];
 
-if(isset($id)){
+if(isset($id)&&(!isset($supp))){
 	$sportList = $smanager->get($id, "sport");
 	$sport = $sportList;
 	if($sport->nom_sport($id)=="volley"){
-		$id=1;
+		$id=3;
 		$lieuList = $lmanager->get($id, "lieu");
 		$lieu = $lieuList; 
 	}
@@ -113,7 +129,8 @@ elseif(!isset($id)&&(!isset($new))){
 							<a href="sports/<?=$sport->idsport()?>">
 								<button class="btn btn-warning" href="sport/<?echo'$sport->id()'?>"><i class="fas fa-eye"></i></button>
 							</a>
-								<!-- <button class="btn btn-danger"><i class="fas fa-trash"></i></button> -->
+							
+							<a class="text-dark" onclick="alert('Etes-vous sûr de vouloir supprimer?')" href="sports/?id=<?=$sport->idsport()?>&supp=1 "><button class="btn btn-danger"><i class="fas fa-trash"></i></button></a>
 							</td>
 						</tr>
 						<?
@@ -125,3 +142,41 @@ elseif(!isset($id)&&(!isset($new))){
 	</div>
 </main>
 <?}?>
+<?
+if (!isset($id)&&(isset($new))) {
+	?>
+	<div class="container justify-content-center" id="form">
+		<form class="container justify-content-center" method="post">
+			<h1 style="text-align: center">Les Sports S.M.S.</h1>
+			<div class="row">
+			    <div class="col-md-4">
+			    	<img src="template/assets/img/salle_back.jpg" class="img-fluid max-width: 50%; and height: auto; img-thumbnail" alt="Responsive image">
+				</div>
+				<div class="col-sm">
+					<img src="template/assets/img/salle_back.jpg" class="img-fluid max-width: 50%; and height: auto; img-thumbnail" alt="Responsive image">
+				</div>
+				<div class="col-md-4">
+					<img src="template/assets/img/salle_back.jpg" class="img-fluid max-width: 50%; and height: auto; img-thumbnail" alt="Responsive image">
+				</div>
+			</div>
+			<div class="form-row1">
+			  	<div class="form-row mt-4">
+			  		<input type="hidden" class="form-control" id="idsport" name="id" value=NULL />
+				    <div class="col-md-12 mb-3">
+			    		<label for="nom_lieu">Nom du sport à ajouter à l'association:</label>
+			    		<input type="text" class="form-control" id="nom_sport" placeholder="Exemple: Balle aux prisionniers" name="nom_sport" required>
+			    	</div>
+		    		<div class="col-md-12 mb-3">
+				    	<label for="adresse">Descriptif du sport</label>
+				     	<input type="text" class="form-control" id="description" placeholder="Exemple: Balle aux prisionniers pratiqué par des loisirs" name="description" required>
+		    		</div>
+		    		
+		    		<div class="col-md-12 mb-3">
+		  				<button class="btn btn-primary btn-lg btn-block" type="submit">Créer</button>
+		  			</div>
+		  		</div>
+		  	</div>
+		</form>	  	
+	</div>
+<?}?>
+

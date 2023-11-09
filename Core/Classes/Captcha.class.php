@@ -170,8 +170,9 @@ class Captcha {
 		for($i=1;$i<=self::$charnb;$i++) {              
 			self::$tword[$i]['angle'] = (rand(1,2)==1)?rand(0,self::$charanglemax):rand(360-self::$charanglemax,360);
 			 
-			if (isset($sicaptchaeasy)) self::$tword[$i]['element'] =(!$pair)?self::$charelc{rand(0,strlen(self::$charelc)-1)}:self::$charelv{rand(0,strlen(self::$charelv)-1)};
-			else self::$tword[$i]['element'] = self::$charel{rand(0,strlen(self::$charel)-1)};
+			if (isset($sicaptchaeasy)) self::$tword[$i]['element'] = (!$pair) ? self::$charelc[rand(0, strlen(self::$charelc) - 1)] : self::$charelv[rand(0, strlen(self::$charelv) - 1)];
+			else self::$tword[$i]['element'] = self::$charel[rand(0, strlen(self::$charel) - 1)];
+
 
 			$pair=!$pair;
 			self::$tword[$i]['size'] = rand(self::$charsizemin,self::$charsizemax);

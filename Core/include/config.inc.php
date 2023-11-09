@@ -19,8 +19,8 @@ define('APP_DEFAULT_LANGUAGE','fr');	// langue par défaut si celle du navigateu
 
 define('SOFT', '');		// nom de l'application
 define('VERSION', '1.0.0.0');			// version de l'application
-define('BUILDDATE', '19/04/2018');		// Date de dernière modification
-define('COPYRIGHT', '2018 LNDM');	// Information de copyright
+define('BUILDDATE', '20/08/2022');		// Date de dernière modification
+define('COPYRIGHT', '2023 LUDIQ');	// Information de copyright
 define('EURO',utf8_encode(chr(128)));
 // MySQL
 define('DBNAME', 'sms');		// nom de la base mysql

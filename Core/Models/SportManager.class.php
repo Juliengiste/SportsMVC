@@ -44,4 +44,8 @@ class SportManager extends Manager {
 
 		return new Sport($donnees);
 	}
+
+	public function deleteSport($id) {
+    $this->delete($id, $this->table); // Call the protected delete method from the parent class
+	}
 }

@@ -19,6 +19,20 @@ class PersonneManager extends Manager {
 	 * @return Boolean
 	 */
 
+	public function __construct() {
+    // Retrieve the database configuration from config.inc.php
+     $dbuser = 'modele'; // Replace with your actual DBUSER
+    $dbpass = 'Mi8OBuAkW0TqFcKr'; // Replace with your actual DBPASS
+
+    try {
+        $this->db = new PDO("mysql:host=localhost;dbname=sms", $dbuser, $dbpass);
+        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    } catch (PDOException $e) {
+        // Handle database connection error
+        die("Database connection failed: " . $e->getMessage());
+    }
+}
+
 	public function newPersonne() {
 		//fais appel à la fonction __construct de la classe Contracts
 		return new Personne();

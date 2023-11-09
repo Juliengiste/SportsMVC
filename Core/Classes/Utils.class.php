@@ -1,7 +1,7 @@
 <?php
 /*******************************
  * Version : 1.0.0.0
- * Revised : jeudi 19 avril 2018, 16:29:28 (UTC+0200)
+ * Revised : mercredi 8 novembre 2023, 16:29:28 (UTC+0200)
  *******************************/
 
 namespace Core\Classes;
@@ -104,7 +104,7 @@ class Utils
     */
    public static function genpwd($param)
    { // Génération aléatoire de mot de passe
-      for ($s = '', $i = 0, $z = strlen($a = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') - 1; $i != $param; $x = rand(0, $z), $s .= $a{$x}, $i++) ;
+      for ($s = '', $i = 0, $z = strlen($a = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') - 1; $i != $param; $x = rand(0, $z), $s .= $a[$x], $i++) ;
       return $s;
    }
 

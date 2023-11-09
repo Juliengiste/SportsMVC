@@ -10,6 +10,7 @@
 }
 
 body {
+	margin-top: 50px;
 	/* background-color: #7c7ef8; */
 	font-family: "Ubuntu", sans-serif;
 	/*display: flex;
@@ -607,7 +608,7 @@ Revised : jeudi 19 avril 2018, 16:49:24 (UTC+0200)
 if(isset($_SESSION[SHORTNAME.'_user'])) $me = $_SESSION[SHORTNAME.'_user'];
 
 ?>
-<div class="container mt-3" id="content">
+<div class="container mt-3" id="content" style="margin-top: 150px;">
 
 	<div class="container-fluid">
 		<section>
