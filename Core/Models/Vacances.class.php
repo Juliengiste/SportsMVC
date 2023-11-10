@@ -4,15 +4,15 @@ namespace Core\Models;
 use Core\Classes\Utils;
 
 class Vacances extends Metier {
-	protected $idvac;
+	protected $idvacances;
 	protected $date_debut;
 	protected $date_fin;
 	protected $label;
 	protected $anneescolaire;
-	protected $allowed_properties = ['idvac', 'date_debut', 'date_fin','label','anneescolaire'];
+	protected $allowed_properties = ['idvacances', 'date_debut', 'date_fin','label','anneescolaire'];
 	
-	public function setIdvac($param){
-		$this->idvac=$param;
+	public function setIdvacances($param){
+		$this->idvacances=$param;
 	}
 	public function setDate_debut($param){
 		$this->date_debut=$param;
@@ -27,7 +27,7 @@ class Vacances extends Metier {
 		$this->anneescolaire=$param;
 	}
 
-	public function idvac(){return $this->idvac;}
+	public function idvacances(){return $this->idvacances;}
 	public function date_debut(){return $this->date_debut;}
 	public function date_fin(){return $this->date_fin;}
 	public function label(){return $this->label;}

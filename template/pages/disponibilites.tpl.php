@@ -168,7 +168,7 @@ elseif(!isset($id)&&(!isset($new))){
 ?>
 <main>
 	<div class="container">
-		<h2>Liste des Années scolaires</h2>
+		<h2>Liste des crénaux disponibles selon les Années scolaires</h2>
 		<a class="text-dark" href="disponibilites/?new=1">
 			<button class="btn btn-primary"><i class="fas fa-plus-circle"></i> Ajout Disponibilités</button>
 		</a>
@@ -221,7 +221,7 @@ else{
 			<input type="hidden" class="form-control" id="idanneescolaire" name="id" value=NULL />
 			<div class="form-row">
 				<div class="form-group col-md-12">
-					<h2>Les Disponibilités (hors période vacances)</h2>
+					<h2>Créer un crénaux Disponible (hors période vacances)</h2>
 					<br><br>
 				</div>
 				<div class="form-group col-md-4">

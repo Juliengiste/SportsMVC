@@ -19,7 +19,8 @@ class AgendaManager extends Manager {
 	protected $pk_l = "idlieu";
 	protected $pk_d = "iddisponibilite";
 	protected $pk_a = "idanneescolaire";
-	protected $pk_v = "idvac";
+	protected $pk_v = "idvacances";
+
 
 	/**
 	 * Login de l’utilisateur
@@ -63,6 +64,7 @@ class AgendaManager extends Manager {
 		$q->bindValue(':fin', $data->date_fin(), PDO::PARAM_STR);
 		$q->bindValue(':label', $data->label(), PDO::PARAM_STR);
 		$q->bindValue(':anneescolaire', $data->anneescolaire(), PDO::PARAM_INT);
+		var_dump($data->anneescolaire());
 		$q->execute();
 	}
 
@@ -72,10 +74,10 @@ class AgendaManager extends Manager {
 		$q->bindValue(':fin', $data->date_fin(), PDO::PARAM_STR);
 		$q->bindValue(':label', $data->label(), PDO::PARAM_STR);
 		$q->bindValue(':anneescolaire', $data->anneescolaire(), PDO::PARAM_INT);
-		$q->bindValue(':id', $data->idvac(), PDO::PARAM_INT);
+		$q->bindValue(':id', $data->idvacances(), PDO::PARAM_INT);
 		$q->execute();
 
-		$z = $this->db->prepare('SELECT * FROM `' . $this->table_v . '` WHERE `' . $this->table_v . '`.`' . $this->pk_v . '`='.$data->idvac().';');
+		$z = $this->db->prepare('SELECT * FROM `' . $this->table_v . '` WHERE `' . $this->table_v . '`.`' . $this->pk_v . '`='.$data->idvacances().';');
 		$z->execute();
 		$donnees = $z->fetch(PDO::FETCH_ASSOC);
 
@@ -119,7 +121,7 @@ class AgendaManager extends Manager {
 	public function addDisponibilite($data){
 		$q=$this->db->prepare('INSERT INTO `'.$this->table_d.'` (jour_semaine, heure_debut, lieu, annee_scolaire, duree, dispoparent) VALUES (:j_s, :h_d, :lieu, :anneescolaire, :duree, :dispoparent);');
 		$q->bindValue(':j_s', $data->jour_semaine(), PDO::PARAM_STR);
-		$q->bindValue(':h_d', $data->heure_debut(), PDO::PARAM_STR);
+		$q->bindValue(':h_d', date('H:i:s', strtotime($data->heure_debut())), PDO::PARAM_STR);
 		$q->bindValue(':lieu', $data->lieu(), PDO::PARAM_INT);
 		$q->bindValue(':anneescolaire', $data->annee_scolaire(), PDO::PARAM_INT);
 		$q->bindValue(':duree', $data->duree(), PDO::PARAM_INT);
@@ -130,7 +132,7 @@ class AgendaManager extends Manager {
 	}
 
 	public function autorisesport($dispo, $sport){
-		$q=$this->db->prepare('INSERT INTO `autorise` (disponibilite_iddisponibilite, sport_idsport) VALUES (:d, :s);');
+		$q=$this->db->prepare('INSERT INTO `autorise` (disponibilte_iddisponibilte, sport_idsport) VALUES (:d, :s);');
 		$q->bindValue(':d', $dispo, PDO::PARAM_INT);
 		$q->bindValue(':s', $sport, PDO::PARAM_INT);
 		$q->execute();

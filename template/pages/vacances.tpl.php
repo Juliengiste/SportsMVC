@@ -1,7 +1,11 @@
 <?php
 $id = Core\Classes\Utils::secureGet('id');
 $new = Core\Classes\Utils::secureGet('new');
+$supp = \Core\Classes\Utils::secureGet('supp');
 $vmanager = new Core\Models\AgendaManager($pdo);
+$vacancesManager = new Core\Models\VacancesManager($pdo);
+
+//$listVac = $vacancesManager->getList('idvac', 'asc', 'sport');
 /*******************************
 Version : 1.0.0.0
 Revised : jeudi 19 avril 2018, 16:49:24 (UTC+0200)
@@ -21,7 +25,16 @@ if((count($_POST) != 0 )&&($_POST["id"]=="NULL")){
 	//header($original);
 }
 
-if(isset($id)&&(!isset($new))){
+if (isset($supp)){
+	$entryIdToDelete = $id; 
+	// L'ID de l'entrée à supprimer
+    $vacancesManager->deleteVacances($entryIdToDelete);
+    // Réinitialiser les variables après la suppression
+    $id = NULL;
+    $supp = NULL;	
+}
+
+if(isset($id)&&(!isset($new))&&(!isset($supp))){
 	$vacances = $vmanager->get($id, "vacances");
 	$annee = $vmanager->get($vacances->anneescolaire(), "anneescolaire");
 ?>
@@ -61,8 +74,7 @@ elseif(!isset($id)&&(!isset($new))){
 	$sort = \Core\Classes\Utils::secureGet('sort',"label");
 	$tri = \Core\Classes\Utils::secureGet('tri',"asc");
 	$invtri = ($tri=="asc")?"desc":"asc";
-	$vacanceList = $vmanager->getList($sort,$tri,"vacances");
-	
+	$vacanceList = $vmanager->getList($sort,$tri,"vacances");	
 ?>
 <main>
 	<div class="container">
@@ -94,10 +106,10 @@ elseif(!isset($id)&&(!isset($new))){
 							<td class="align-middle"><?=date("d-m-Y", strtotime($vacances->date_debut()))?></td>
 							<td class="align-middle"><?=date("d-m-Y", strtotime($vacances->date_fin()))?></td>
 							<td class="align-middle">
-							<a href="vacances/<?=$vacances->idvac()?>">
-								<button class="btn btn-warning" href="vacances/<?echo'$vacances->idvac()'?>"><i class="fas fa-eye"></i></button>
+							<a href="vacances/<?=$vacances->idvacances()?>">
+								<button class="btn btn-warning" href="vacances/<?echo'$vacances->idvacances()'?>"><i class="fas fa-eye"></i></button>
 							</a>
-								<!-- <button class="btn btn-danger"><i class="fas fa-trash"></i></button> -->
+								<a class="text-dark" onclick="alert('Etes-vous sûr de vouloir supprimer?')" href="vacances/?id=<?=$vacances->idvacances();?>&supp=1 "><button class="btn btn-danger"><i class="fas fa-trash"></i></button></a>
 							</td>
 						</tr>
 						<?
@@ -115,7 +127,7 @@ else{
 <div class="container justify-content-center" id="form">
 	<form class="container justify-content-center" method="post">
 		<div class="form-row mt-4">
-			<input type="hidden" class="form-control" id="idvacances" name="id" value=NULL />
+			<input type="hidden" class="form-control" id="idvac" name="id" value=NULL />
 			<div class="form-row">
 			<h2>Les vacances</h2>
 			<br><br>
@@ -130,7 +142,7 @@ else{
 				<div class="form-group col-md-6">
 					<label>Date de fin</label> 
 					<input type="date" class="form-control" id="date_fin" name="date_fin">
-					<select class="form-control" id="idannee_scolaire" name="idannee_scolaire">
+					<select class="form-control" id="idanneescolaire" name="idanneescolaire">
 						<option disabled selected>Choisissez l'année de référence</option>
 						<?foreach ($anneescolist as $anneesco) {
 							echo "<option value=".$anneesco->idanneescolaire().">".$anneesco->label()."</option>";

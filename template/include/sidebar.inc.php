@@ -634,15 +634,20 @@ if(isset($me)){
             </a>
             <div class="sidebar-submenu">
               <ul>
-                <li>
-                  <a href="lieu/1">Badminton</a>
                 </li>
-                <li>
-                  <a href="lieu/2">Tennis de table</a>
-                </li>
-                <li>
-                  <a href="lieu/1">Volley</a>
-                </li>
+                <? 
+                  $sort = \Core\Classes\Utils::secureGet('sort',"idsport");
+                  $tri = \Core\Classes\Utils::secureGet('tri',"asc");
+                  $sportList = $smanager->getList($sort,$tri,"sport");
+                    if(is_array($sportList)){
+                      foreach ($sportList as $sport) {
+                        ?>
+                        <li>
+                         <a href="lieu/<?=$sport->idsport()?>"><?=$sport->nom_sport()?></a>
+                        </li>     
+                        <?
+                      }
+                    }?>      
               </ul>
             </div>
           </li>
@@ -708,6 +713,18 @@ if(isset($me)){
             <a href="sports">
               <i class="fa fa-calendar"></i>
               <span>Gestion des Sports</span>
+            </a>
+          </li>
+          <li>
+            <a href="vacances">
+              <i class="fa fa-folder"></i>
+              <span>Gestion des Vacances</span>
+            </a>
+          </li>
+          <li>
+            <a href="disponibilites">
+              <i class="fa fa-folder"></i>
+              <span>Gestion des Crénaux</span>
             </a>
           </li>
           <li>

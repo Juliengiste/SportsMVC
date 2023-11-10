@@ -298,15 +298,72 @@ else{
 <script type="text/javascript">
 console.log('hey console');
 
+function form1toform2(sport){
+      form1.css("left" ,  '-45rem');
+      form2.css("left" , '4rem');
+      progress.css("width" , '16.5rem');
+      // récupérer la valeur de sport
+      $('#form_sport').val(sport.value);
+    }
+
+
+    function form2toform1() {
+        form1.css('left', '4rem');
+        form2.css('left','45rem');
+        progress.css('width', '7.5rem');
+    }
+
+    function form2toform3(reservation) {
+        form2.css('left', '-45rem');
+        form3.css('left', '4rem');
+        progress.css('width', '25rem')
+        // récupérer la valeur de reservation
+        $('#form_reservation').val(reservation.value);
+        getlistdispo($('#form_sport').val());
+        affichageformdate($('#form_reservation').val());
+    }
+
+    function form3toform2() {
+        form2.css('left', '4rem');
+        form3.css('left', '45rem');
+        progress.css('width', '16.5rem')
+
+    }
+
+    function form3toform4() {
+        form3.css('left', '-45rem');
+        form4.css('left', '4rem');
+        progress.css('width', '36rem');
+        if($('#form_reservation').val()=="multi"){
+          $('#form_date_debut').val($('#date_debut').val());
+          $('#form_date_fin').val($('#date_fin').val());
+          $('#form_jour_semaine').val($('#js').val());
+        }else{
+          $('#form_date_cours').val($('#date_cours').val());
+        }
+        $('#form_heure_debut').val($('#heure_debut').val());
+        $('#form_duree').val($('#duree').val());
+        resume();
+    }
+
+    function form4toform3() {
+        form3.css('left', '4rem');
+        form4.css('left', '45rem');
+        progress.css('width', '25rem')
+
+    }
+
+var form1, form2, form3, form4, progress;
+
 $(document).ready(function() {
   $('button.sport').on('click', function() {
     
-    var form1 = $('#form-1');
-    var form2 = $('#form-2');
-    var form3 = $('#form-3');
-    var form4 = $('#form-4');
+    form1 = $('#form-1');
+    form2 = $('#form-2');
+    form3 = $('#form-3');
+    form4 = $('#form-4');
 
-    var progress = $('#progress');
+    progress = $('#progress');
 
     function getlistdispo(sport){
       switch (sport){
@@ -322,7 +379,7 @@ $(document).ready(function() {
             $p->execute();
             $data = $p->fetch(PDO::FETCH_ASSOC);
             $annee = $data['idanneescolaire'];
-            $q=$pdo->prepare('SELECT * FROM `disponibilite` JOIN `autorise` ON `disponibilite`.`iddisponibilite`=`autorise`.`disponibilite_iddisponibilite` JOIN `lieu` ON `disponibilite`.`lieu` = `lieu`.`idlieu` WHERE `annee_scolaire`=:annee AND `sport_idsport`=:idsport AND `duree` IS NOT NULL;');
+            $q=$pdo->prepare('SELECT * FROM `disponibilite` JOIN `autorise` ON `disponibilite`.`iddisponibilte`=`autorise`.`disponibilte_iddisponibilte` JOIN `lieu` ON `disponibilite`.`lieu` = `lieu`.`idlieu` WHERE `annee_scolaire`=:annee AND `sport_idsport`=:idsport AND `duree` IS NOT NULL;');
             $q->bindValue(":annee", $annee, PDO::PARAM_INT);
             $q->bindValue(":idsport", $donnees['idsport'], PDO::PARAM_INT);
             $q->execute();
@@ -392,61 +449,6 @@ $(document).ready(function() {
       div.html(text);
     }
 
-    function form1toform2(sport){
-      form1.css("left" ,  '-45rem');
-      form2.css("left" , '4rem');
-      progress.css("width" , '16.5rem');
-      // récupérer la valeur de sport
-      $('#form_sport').val(sport.value);
-    }
-
-
-    function form2toform1() {
-        form1.css('left', '4rem');
-        form2.css('left','45rem');
-        progress.css('width', '7.5rem');
-    }
-
-    function form2toform3(reservation) {
-        form2.css('left', '-45rem');
-        form3.css('left', '4rem');
-        progress.css('width', '25rem')
-        // récupérer la valeur de reservation
-        $('#form_reservation').val(reservation.value);
-        getlistdispo($('#form_sport').val());
-        affichageformdate($('#form_reservation').val());
-    }
-
-    function form3toform2() {
-        form2.css('left', '4rem');
-        form3.css('left', '45rem');
-        progress.css('width', '16.5rem')
-
-    }
-
-    function form3toform4() {
-        form3.css('left', '-45rem');
-        form4.css('left', '4rem');
-        progress.css('width', '36rem');
-        if($('#form_reservation').val()=="multi"){
-          $('#form_date_debut').val($('#date_debut').val());
-          $('#form_date_fin').val($('#date_fin').val());
-          $('#form_jour_semaine').val($('#js').val());
-        }else{
-          $('#form_date_cours').val($('#date_cours').val());
-        }
-        $('#form_heure_debut').val($('#heure_debut').val());
-        $('#form_duree').val($('#duree').val());
-        resume();
-    }
-
-    function form4toform3() {
-        form3.css('left', '4rem');
-        form4.css('left', '45rem');
-        progress.css('width', '25rem')
-
-    }
-
     function updateTextInput(val) {
       document.getElementById('textInput').value=val; 
     }
@@ -458,3 +460,5 @@ $(document).ready(function() {
      });
 });
 </script>
+
+
