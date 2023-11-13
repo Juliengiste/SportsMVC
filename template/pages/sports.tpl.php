@@ -36,29 +36,46 @@ if (isset($supp)){
 	$id = NULL;
 	$supp = NULL;
 }
-
-if (isset($update)){
-	var_dump($_POST);
-	// Vérifie d'abord si l'ID est présent dans la requête
+// Modifier un sport
+if (isset($update)) {
     if (isset($_POST['id'])) {
         $id = $_POST['id'];
-        // Récupérez l'objet Sport à partir de l'ID
         $sport = $smanager->get($id, "sport");
-        //$lieu = $lmanager->get($id, "lieu_sport");
-        // Vérifie si l'objet Sport a été récupéré avec succès
-        if ($sport) {
-            // Effectuez la mise à jour avec les données du formulaire
+
+         if ($sport) {
+            // Mise à jour des informations du sport
+            $sport->setIdsport($_POST['id']);
             $sport->setNom_sport($_POST['nom_sport']);
             $sport->setDescription($_POST['description']);
-            $smanager->updateSport($sport);
+
+            // Récupération des lieux actuellement associés à ce sport
+            $associatedLocations = $smanager->getSportAssociatedLieus($id);
+
+            // Suppression de tous les anciens liens entre le sport et les lieux associés
+            foreach ($associatedLocations as $location) {
+                $smanager->deleteSportLocationLink($id, $location->getIdLieu());
+            }
+
+            // Ajout des nouveaux liens pour les lieux sélectionnés
+            if (isset($_POST['lieux']) && is_array($_POST['lieux'])) {
+                foreach ($_POST['lieux'] as $idLieu) {
+                    $smanager->associateSportWithLieu($id, $idLieu);
+                }
+            }
             
+            // Mettre à jour le sport avec ses nouvelles données
+            $smanager->updateSport($sport);
+             header("Location: /sports");
+    		exit();
         } else {
             // Gérez le cas où l'ID ne correspond à aucun sport existant
+            echo ("l'ID ne correspond à aucun sport existant");
         }
     } else {
         // Gérez le cas où l'ID n'est pas présent dans la requête
+        echo ("l'ID n'est pas présent dans la requête");
     }
-}
+ }
 
 // Ajouter un sport
 if ((count($_POST) != 0) && ($_POST["id"] == "NULL")) {
@@ -110,10 +127,10 @@ if(isset($id)&&(!isset($supp))&&(!isset($update))){
 			foreach ($lieuxAssocies as $lieu) {
 				// Affichage de chaque lieu associé
 				echo '<div>';
-				echo '<h5>' . $lieu->getNomLieu() . '</h5>';
+				echo '<h5>' . $lieu->Nom_lieu($lieu) . '</h5>';
 				// Afficher les détails du lieu
-				echo '<p>' . $lieu->getAdresse() . '</p>';
-				echo '<p>' . $lieu->getCp() . ' ' . $lieu->getVille() . '</p>';
+				echo '<p>' . $lieu->Adresse($lieu) . '</p>';
+				echo '<p>' . $lieu->cp($lieu) . ' ' . $lieu->ville($lieu) . '</p>';
 				echo '</div>';
 			}
 			?>
@@ -122,7 +139,7 @@ if(isset($id)&&(!isset($supp))&&(!isset($update))){
 </div>
 
 <?}
-elseif(!isset($id)&&(!isset($new))){
+elseif(!isset($id)&&(!isset($new))&&(!isset($update))){
 	$sort = \Core\Classes\Utils::secureGet('sort',"nom_sport");
 	$tri = \Core\Classes\Utils::secureGet('tri',"asc");
 	$invtri = ($tri=="asc")?"desc":"asc";
@@ -250,7 +267,7 @@ if (!isset($id)&&(isset($new))) {
 if (isset($id) && !isset($supp) && isset($update)) {
     $sportManager = new Core\Models\SportManager($pdo);
     $sport = $sportManager->get($id, "sport");
-
+var_dump($_POST);
     // ... (récupération des lieux si nécessaire)
     ?>
     <div class="container justify-content-center" id="form">
@@ -263,7 +280,7 @@ if (isset($id) && !isset($supp) && isset($update)) {
                 <div class="form-row mt-4">
                     <input type="hidden" class="form-control" id="idsport" name="id" value="<?= $sport->idsport() ?>" />
                     <div class="col-md-12 mb-3">
-                        <label for="nom_lieu">Nom du sport à ajouter à l'association:</label>
+                        <label for="nom_lieu">Nom du sport à modifier:</label>
                         <input type="text" class="form-control" id="nom_sport" placeholder="Exemple: Balle aux prisionniers" name="nom_sport" required value="<?= $sport->nom_sport() ?>">
                     </div>
                     <div class="col-md-12 mb-3">
@@ -274,18 +291,19 @@ if (isset($id) && !isset($supp) && isset($update)) {
 					    <?php
 					    $lieuManager = new Core\Models\LieuManager($pdo);
 					    $allLieus = $lieuManager->getAllLieus();
-					   // var_dump($allLieus);
+					    //var_dump($allLieus);
 					    $associatedLieus = $smanager->getSportAssociatedLieus($sport->idsport());
+					    //var_dump($associatedLieus);
 					    foreach ($allLieus as $lieu) {
 						    $isChecked = false;	//var_dump($lieu);
 
 						    foreach ($associatedLieus as $associatedLieu) {
-						    	//var_dump($lieu);
+						    	
 						        if ($lieu->idlieu() === $associatedLieu->getIdlieu()) {
 						            $isChecked = true;
 						            break;
 						        }
-						    //var_dump($associatedLieu);}
+						    //var_dump($associatedLieu);
 						    }
 						    echo '<div class="form-check">';
 						    echo '<input class="form-check-input" type="checkbox" value="' . $lieu->idlieu() . '" id="lieu_' . $lieu->idlieu() . '" name="lieux[]" ' . ($isChecked ? 'checked' : '') . '>';

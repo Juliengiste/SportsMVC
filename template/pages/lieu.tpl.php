@@ -167,6 +167,7 @@ elseif (!isset($id)&&(isset($new))) {
 <?}
 elseif (isset($id)&&(!isset($new))) {
 	$lieu = $lmanager->get($id, "lieu");
+	var_dump($lieu);
 ?>
 	<div class="container justify-content-center" id="form">
 		<form class="container justify-content-center" method="post">

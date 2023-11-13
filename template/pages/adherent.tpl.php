@@ -18,6 +18,7 @@
 <?php
 $id = \Core\Classes\Utils::secureGet('id');
 $new = \Core\Classes\Utils::secureGet('new');
+$supp = \Core\Classes\Utils::secureGet('new');
 $smanager = new Core\Models\PersonneManager($pdo);
 $lmanager = new Core\Models\LieuManager($pdo);
 

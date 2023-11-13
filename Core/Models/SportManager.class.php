@@ -39,32 +39,34 @@ class SportManager extends Manager {
 	    }
 	}
 
+
 	public function updateSport($data){
-		 // Vérifier s'il existe des liaisons dans lieu_sport pour ce sport
+	    // Vérifier s'il existe des liaisons dans lieu_sport pour ce sport
 	    $q = $this->db->prepare('SELECT COUNT(*) as count FROM lieu_sport WHERE idsport = :id');
-	    $q->bindValue(':id', $id, PDO::PARAM_INT);
+	    $q->bindValue(':id', $data->idsport(), PDO::PARAM_INT);
 	    $q->execute();
 	    $result = $q->fetch(PDO::FETCH_ASSOC);
-var_dump($result);
+
 	    if ($result['count'] > 0) {
-	        // MAJ les liaisons dans lieu_sport pour l'idsport spécifique
-	        $updateLieuSport = $this->db->prepare('UPDATE FROM lieu_sport WHERE idsport = :id');
-	        $updateLieuSport->bindValue(':id', $id, PDO::PARAM_INT);
-	        $updateLieuSport->execute();
+	        if (isset($_POST['lieux']) && is_array($_POST['lieux'])) {
+	            foreach ($_POST['lieux'] as $idLieu) {
+	                $this->associateSportWithLieu($data->idsport(), $idLieu);
+	            }
+	        }
 	    }
 
-		$q=$this->db->prepare('UPDATE `'.$this->table.'` SET nom_sport=:nom_sport, description=:description WHERE `' . $this->pk . '`=:id;');
-		//var_dump($q);
-		$q->bindValue(':nom_sport', $data->nom_sport(), PDO::PARAM_STR);
-		$q->bindValue(':description', $data->description(), PDO::PARAM_STR);
-		$q->bindValue(':id', $data->idsport(), PDO::PARAM_INT);
-		$q->execute();
+	    $q = $this->db->prepare('UPDATE '.$this->table.' SET nom_sport = :nom_sport, description = :description WHERE idsport = :id');
+	    $q->bindValue(':nom_sport', $data->nom_sport(), PDO::PARAM_STR);
+	    $q->bindValue(':description', $data->description(), PDO::PARAM_STR);
+	    $q->bindValue(':id', $data->idsport(), PDO::PARAM_INT);
+	    $q->execute();
 
-		$z = $this->db->prepare('SELECT * FROM `' . $this->table . '` WHERE `' . $this->table . '`.`' . $this->pk . '`='.$data->idsport().';');
-		$z->execute();
-		$donnees = $z->fetch(PDO::FETCH_ASSOC);
+	    $z = $this->db->prepare('SELECT * FROM '.$this->table.' WHERE idsport = :id');
+	    $z->bindValue(':id', $data->idsport(), PDO::PARAM_INT);
+	    $z->execute();
+	    $donnees = $z->fetch(PDO::FETCH_ASSOC);
 
-		return new Sport($donnees);
+	    return new Sport($donnees);
 	}
 
 	public function deleteSport($id) {
@@ -86,10 +88,20 @@ var_dump($result);
 	}
 
 	public function associateSportWithLieu($idSport, $idLieu) {
-    $q = $this->db->prepare('INSERT INTO lieu_sport (idsport, idlieu) VALUES (:idSport, :idLieu);');
-    $q->bindValue(':idSport', $idSport, PDO::PARAM_INT);
-    $q->bindValue(':idLieu', $idLieu, PDO::PARAM_INT);
-    $q->execute();
+		$q = $this->db->prepare('SELECT * FROM lieu_sport WHERE idsport = :idSport AND idlieu = :idLieu');
+	    $q->bindValue(':idSport', $idSport, PDO::PARAM_INT);
+	    $q->bindValue(':idLieu', $idLieu, PDO::PARAM_INT);
+	    $q->execute();
+	    $result = $q->fetch(PDO::FETCH_ASSOC);
+
+	    if (!$result) {
+	        $q = $this->db->prepare('INSERT INTO lieu_sport (idsport, idlieu) VALUES (:idSport, :idLieu);');
+	        $q->bindValue(':idSport', $idSport, PDO::PARAM_INT);
+	        $q->bindValue(':idLieu', $idLieu, PDO::PARAM_INT);
+	        $q->execute();
+	    } else {
+	    
+		}
 	}
 
 	public function getLieuDetails($idlieu) {
@@ -105,6 +117,8 @@ var_dump($result);
 	        $lieu->setIdlieu($lieuData['idlieu']); // Assurez-vous de récupérer l'ID du lieu
 	        $lieu->setNom_lieu($lieuData['nom_lieu']);
 	        $lieu->setAdresse($lieuData['adresse']);
+	        $lieu->setCp($lieuData['cp']);
+	        $lieu->setVille($lieuData['ville']);
 	        // Assurez-vous de définir d'autres propriétés de Lieu de manière similaire
 
 	        return $lieu;
@@ -133,4 +147,12 @@ var_dump($result);
 	    return $associatedLieus;
 	}
 
+	 public function deleteSportLocationLink($sportId, $locationId) {
+        // Utilisez ici votre logique pour supprimer les liens entre le sport et les lieux associés
+        // Étant donné que vous utilisez PDO, vous devrez exécuter une requête SQL DELETE pour supprimer les enregistrements associés
+        $query = $this->db->prepare('DELETE FROM lieu_sport WHERE idsport = :sportId AND idlieu = :locationId');
+        $query->bindParam(':sportId', $sportId);
+        $query->bindParam(':locationId', $locationId);
+        $query->execute();
+    }
 }
