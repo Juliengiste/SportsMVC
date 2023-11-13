@@ -24,15 +24,37 @@ class SportManager extends Manager {
 		return new Sport();
 	}
 
-	public function addSport($data){
-		$q=$this->db->prepare('INSERT INTO `'.$this->table.'` (nom_sport, description) VALUES (:nom_sport, :description);');
-		$q->bindValue(':nom_sport', $data->nom_sport(), PDO::PARAM_STR);
-		$q->bindValue(':description', $data->description(), PDO::PARAM_STR);
-		$q->execute();
+	public function addSport($data, $lieuxSelectionnes){
+	    $q = $this->db->prepare('INSERT INTO `' . $this->table . '` (nom_sport, description) VALUES (:nom_sport, :description);');
+	    $q->bindValue(':nom_sport', $data->nom_sport(), PDO::PARAM_STR);
+	    $q->bindValue(':description', $data->description(), PDO::PARAM_STR);
+	    $q->execute();
+
+	    // Récupérer l'ID du sport nouvellement ajouté
+	    $newSportId = $this->db->lastInsertId();
+		//var_dump($lieuxSelectionnes);
+	    // Associer les lieux au nouveau sport
+	    foreach ($lieuxSelectionnes as $lieuId) {
+	        $this->associateSportWithLieu($newSportId, $lieuId);
+	    }
 	}
 
 	public function updateSport($data){
+		 // Vérifier s'il existe des liaisons dans lieu_sport pour ce sport
+	    $q = $this->db->prepare('SELECT COUNT(*) as count FROM lieu_sport WHERE idsport = :id');
+	    $q->bindValue(':id', $id, PDO::PARAM_INT);
+	    $q->execute();
+	    $result = $q->fetch(PDO::FETCH_ASSOC);
+var_dump($result);
+	    if ($result['count'] > 0) {
+	        // MAJ les liaisons dans lieu_sport pour l'idsport spécifique
+	        $updateLieuSport = $this->db->prepare('UPDATE FROM lieu_sport WHERE idsport = :id');
+	        $updateLieuSport->bindValue(':id', $id, PDO::PARAM_INT);
+	        $updateLieuSport->execute();
+	    }
+
 		$q=$this->db->prepare('UPDATE `'.$this->table.'` SET nom_sport=:nom_sport, description=:description WHERE `' . $this->pk . '`=:id;');
+		//var_dump($q);
 		$q->bindValue(':nom_sport', $data->nom_sport(), PDO::PARAM_STR);
 		$q->bindValue(':description', $data->description(), PDO::PARAM_STR);
 		$q->bindValue(':id', $data->idsport(), PDO::PARAM_INT);
@@ -46,6 +68,69 @@ class SportManager extends Manager {
 	}
 
 	public function deleteSport($id) {
-    $this->delete($id, $this->table); // Call the protected delete method from the parent class
+    	 // Vérifier s'il existe des liaisons dans lieu_sport pour ce sport
+	    $q = $this->db->prepare('SELECT COUNT(*) as count FROM lieu_sport WHERE idsport = :id');
+	    $q->bindValue(':id', $id, PDO::PARAM_INT);
+	    $q->execute();
+	    $result = $q->fetch(PDO::FETCH_ASSOC);
+
+	    if ($result['count'] > 0) {
+	        // Supprimer les liaisons dans lieu_sport pour l'idsport spécifique
+	        $deleteLieuSport = $this->db->prepare('DELETE FROM lieu_sport WHERE idsport = :id');
+	        $deleteLieuSport->bindValue(':id', $id, PDO::PARAM_INT);
+	        $deleteLieuSport->execute();
+	    }
+
+	    // Ensuite, supprimer le sport
+	    $this->delete($id, $this->table);
 	}
+
+	public function associateSportWithLieu($idSport, $idLieu) {
+    $q = $this->db->prepare('INSERT INTO lieu_sport (idsport, idlieu) VALUES (:idSport, :idLieu);');
+    $q->bindValue(':idSport', $idSport, PDO::PARAM_INT);
+    $q->bindValue(':idLieu', $idLieu, PDO::PARAM_INT);
+    $q->execute();
+	}
+
+	public function getLieuDetails($idlieu) {
+    $q = $this->db->prepare('SELECT * FROM lieu WHERE idlieu = :idlieu');
+    $q->bindValue(':idlieu', $idlieu, PDO::PARAM_INT);
+    $q->execute();
+
+    $lieuData = $q->fetch(PDO::FETCH_ASSOC);
+    
+	    // Si des données sont trouvées, instanciez un objet Lieu
+	    if ($lieuData) {
+	        $lieu = new Lieu();
+	        $lieu->setIdlieu($lieuData['idlieu']); // Assurez-vous de récupérer l'ID du lieu
+	        $lieu->setNom_lieu($lieuData['nom_lieu']);
+	        $lieu->setAdresse($lieuData['adresse']);
+	        // Assurez-vous de définir d'autres propriétés de Lieu de manière similaire
+
+	        return $lieu;
+	    }
+
+	    return null; // Renvoyer null si aucun lieu n'est trouvé
+	}
+
+	public function getSportAssociatedLieus($sportId) {
+	    // Faites une requête pour récupérer les lieux associés à un sport spécifique
+	    $q = $this->db->prepare('SELECT * FROM lieu_sport WHERE idsport = :sportId');
+	    $q->bindValue(':sportId', $sportId, PDO::PARAM_INT);
+	    $q->execute();
+
+	    $lieus = [];
+	    while ($row = $q->fetch(PDO::FETCH_ASSOC)) {
+	        $lieus[] = $row['idlieu']; // Récupérez les IDs des lieux liés au sport
+	    }
+
+	    // Vous pouvez maintenant utiliser ces IDs pour récupérer les détails des lieux
+	    $associatedLieus = [];
+	    foreach ($lieus as $lieuId) {
+	        $associatedLieus[] = $this->getLieuDetails($lieuId);
+	    }
+
+	    return $associatedLieus;
+	}
+
 }

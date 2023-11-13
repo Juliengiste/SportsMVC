@@ -35,6 +35,10 @@ class Lieu extends Metier {
 		$this->longitude=$param;
 	}
 
+	public function getIdlieu(){
+    	return $this->idlieu;
+	}
+
 	public function idlieu(){return $this->idlieu;}
 	public function nom_lieu(){return $this->nom_lieu;}
 	public function adresse(){return $this->adresse;}

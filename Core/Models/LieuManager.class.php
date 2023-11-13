@@ -49,4 +49,23 @@ class LieuManager extends Manager {
 
 		return new Lieu($donnees);
 	}
+
+	public function getAllLieus() {
+	    $q = $this->db->query('SELECT * FROM lieu');
+	    $lieus = $q->fetchAll(PDO::FETCH_ASSOC);
+	    $lieuObjects = [];
+
+	    foreach ($lieus as $lieuData) {
+	        $lieu = new Lieu();
+	        $lieu->setIdlieu($lieuData['idlieu']);
+	        //var_dump($lieu);
+	        $lieu->setNom_lieu($lieuData['nom_lieu']);
+	        // ... Définir d'autres attributs pour Lieu
+
+	        $lieuObjects[] = $lieu;
+	        //var_dump($lieuObjects);
+	    }
+
+	    return $lieuObjects;
+	}
 }
