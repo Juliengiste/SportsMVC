@@ -104,6 +104,23 @@ class SportManager extends Manager {
 		}
 	}
 
+	public function associateLieuWithSport($idLieu, $idSport) {
+		$q = $this->db->prepare('SELECT * FROM lieu_sport WHERE idlieu = :idLieu AND idsport = :idSport');
+		$q->bindValue(':idLieu', $idLieu, PDO::PARAM_INT);
+	    $q->bindValue(':idSport', $idSport, PDO::PARAM_INT);
+	    $q->execute();
+	    $result = $q->fetch(PDO::FETCH_ASSOC);
+
+	    if (!$result) {
+	        $q = $this->db->prepare('INSERT INTO lieu_sport (idlieu, idsport) VALUES (:idLieu, :idSport);');
+	       	$q->bindValue(':idLieu', $idLieu, PDO::PARAM_INT);
+	   		$q->bindValue(':idSport', $idSport, PDO::PARAM_INT);
+	        $q->execute();
+	    } else {
+	    
+		}
+	}
+
 	public function getLieuDetails($idlieu) {
     $q = $this->db->prepare('SELECT * FROM lieu WHERE idlieu = :idlieu');
     $q->bindValue(':idlieu', $idlieu, PDO::PARAM_INT);
@@ -155,4 +172,10 @@ class SportManager extends Manager {
         $query->bindParam(':locationId', $locationId);
         $query->execute();
     }
+
+    public function deleteSportLieuOnlyLinks($idLieu) {
+    $query = $this->db->prepare('DELETE FROM lieu_sport WHERE idlieu = :idLieu');
+    $query->bindParam(':idLieu', $idLieu, PDO::PARAM_INT);
+    $query->execute();
+}
 }

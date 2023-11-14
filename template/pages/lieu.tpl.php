@@ -29,15 +29,56 @@ $me = $_SESSION[SHORTNAME.'_user'];
 $id = \Core\Classes\Utils::secureGet('id');
 $new = \Core\Classes\Utils::secureGet('new');
 $supp = \Core\Classes\Utils::secureGet('supp');
+$update = \Core\Classes\Utils::secureGet('update');
 $lmanager = new Core\Models\AgendaManager($pdo);
+$lieumanager = new Core\Models\LieuManager($pdo);
+$smanager = new Core\Models\SportManager($pdo);
 
-// if (isset($supp)){
-// 	$lmanager->supp($id, "lieu");
-// 	$id = NULL;
-// 	$supp = NULL;
-// }
+ if (isset($supp)){
+ 	if ($lieumanager->exists($id, "lieu")) {
+ 		$idlieu=$id;
+ 		//supprimer les sports associé au lieu
+ 		$smanager->deleteSportLieuOnlyLinks($id);
+ 		//supprimer le lieu
+ 		$lmanager->supp($id, "lieu");
 
-if ((count($_POST) != 0 )&&(($_POST["id"]=="NULL"))){
+	    $id = NULL;
+	    $supp = NULL;
+	} else {
+	    echo("erreur -> il n'y a pas de lieu pour cet ID.");
+	}
+	header("Location: /lieu");
+    		exit();
+ }
+
+ if (isset($update)) {
+    if (isset($_POST['id'])) {
+        $lieu = $lieumanager->get($id, "lieu");
+       // var_dump($_POST);
+        if ($lieu != NULL) {
+            // Mise à jour des informations du lieu
+            $lieu->setNom_lieu($_POST['nom_lieu']);
+            $lieu->setAdresse($_POST['adresse']);
+            $lieu->setCp($_POST['cp']);
+            $lieu->setVille($_POST['ville']);
+            $lieu->setLattitude($_POST['lattitude']);
+            $lieu->setLongitude($_POST['longitude']);
+             //var_dump($_POST);
+            // Mettre à jour le lieu avec ses nouvelles données
+            $lieumanager->updateLieu($lieu); // Assurez-vous que la méthode update existe dans LieuManager
+            header("Location: /lieu");
+            exit();
+        } else {
+            // Gérez le cas où l'ID ne correspond à aucun lieu existant
+            echo ("L'ID ne correspond à aucun lieu existant");
+        }
+    } else {
+        // Gérez le cas où l'ID n'est pas présent dans la requête
+        echo ("L'ID n'est pas présent dans la requête");
+    }
+}
+
+if ((count($_POST) != 0 )&&(($_POST["id"]=="NULL"))&&(!isset($update))){
 	$newlieu = $lmanager->new("lieu");
 	$newlieu->setNom_lieu($_POST['nom_lieu']);
 	$newlieu->setAdresse($_POST['adresse']);
@@ -46,8 +87,7 @@ if ((count($_POST) != 0 )&&(($_POST["id"]=="NULL"))){
 	$newlieu->setLattitude((isset($_POST['lattitude']))?$_POST['lattitude']:"NULL");
 	$newlieu->setLongitude((isset($_POST['longitude']))?$_POST['longitude']:"NULL");
 	$affichernewLieu = $lmanager->addLieu($newlieu);
-	$id = NULL;
-	$new = NULL;
+	
 }
 
 // if ((count($_POST) != 0)&&(($_POST["id"]!="NULL"))){
@@ -100,9 +140,12 @@ if(!isset($id)&&(!isset($new))){
 								<a href="lieu/?id=<?=$lieu->idlieu()?>">
 									<button class="btn btn-warning" ><i class="fas fa-eye"></i></button>
 								</a>
-								<!-- <a href="lieu/?id=<?=$lieu->idlieu()?>&supp=1">
+								<a href="lieu/?id=<?=$lieu->idlieu()?>&update=1">
+									<button class="btn btn-primary"><i class="fas fa-edit"></i></button>
+								</a>
+								<a href="lieu/?id=<?=$lieu->idlieu()?>&supp=1">
 									<button class="btn btn-danger"><i class="fas fa-trash"></i></button>
-								</a> -->
+								</a>
 							</td>
 						</tr>
 						<?
@@ -165,9 +208,8 @@ elseif (!isset($id)&&(isset($new))) {
 		</form>	  	
 	</div>
 <?}
-elseif (isset($id)&&(!isset($new))) {
+elseif (isset($id)&&(!isset($new))&&(!isset($update))) {
 	$lieu = $lmanager->get($id, "lieu");
-	var_dump($lieu);
 ?>
 	<div class="container justify-content-center" id="form">
 		<form class="container justify-content-center" method="post">
@@ -212,6 +254,72 @@ elseif (isset($id)&&(!isset($new))) {
 	</div>
 <?
 }
+
+elseif (isset($id)&&(!isset($new))&&(isset($update))) {
+	$lieutManager = new Core\Models\LieuManager($pdo);
+	$lieu = $lmanager->get($id, "lieu");
+	//var_dump($lieu);
+?>
+	<div class="container justify-content-center" id="form">
+		<form class="container justify-content-center" method="post">
+			<h1 style="text-align: center">Les Lieux S.M.S.</h1>
+			<div class="row">
+			    <div class="col-md-4">
+			    	<img src="template/assets/img/salle_back.jpg" class="img-fluid max-width: 50%; and height: auto; img-thumbnail" alt="Responsive image">
+				</div>
+				<div class="col-sm">
+					<img src="template/assets/img/salle_back.jpg" class="img-fluid max-width: 50%; and height: auto; img-thumbnail" alt="Responsive image">
+				</div>
+				<div class="col-md-4">
+					<img src="template/assets/img/salle_back.jpg" class="img-fluid max-width: 50%; and height: auto; img-thumbnail" alt="Responsive image">
+				</div>
+			</div>
+
+			<div class="form-row1">
+			  	<div class="form-row mt-4">
+			  		<input type="hidden" class="form-control" id="idlieu" name="id" value=<?$lieu->idlieu()?> />
+				    <div class="col-md-12 mb-3">
+			    		<label for="nom_lieu">Nom du lieu utilisé par l'association:</label>
+			    		<input type="text" class="form-control" id="nom_lieu" placeholder="Exemple: Gymnase de Saulieu" name="nom_lieu" value="<?=$lieu->nom_lieu()?>"required>
+			    	</div>
+		    		<div class="col-md-12 mb-3">
+				    	<label for="adresse">Adresse du lieu</label>
+				     	<input type="text" class="form-control" id="adresse" placeholder="Exemple: 15 rue Pierre de Coubertin" name="adresse" value="<?=$lieu->adresse()?>" required>
+		    		</div>
+		    		<div class="col-md-8 mb-3">
+				    	<label for="ville">Ville</label>
+				     	<input type="text" class="form-control" id="ville" placeholder="Exemple: Saulieu" name="ville" value="<?=$lieu->ville()?>" required>
+				    </div>
+		    		<div class="col-md-4 mb-3">
+		      			<label for="code_postale">Code Postale</label>
+		      			<input type="text" class="form-control" id="code_postale" placeholder="Exemple: 21210"  name="cp" value="<?=$lieu->cp()?>" required>
+		    		</div>
+		    		<div class="col-md-6 mb-3">
+		      			<label for="lattitude">Latitude</label>
+		      			<input type="text" class="form-control" id="lattitude" placeholder="47.281566" name="lattitude" value="<?=$lieu->lattitude()?>">
+		    		</div>
+		    		<div class="col-md-6 mb-3">
+		      			<label for="longitude">Longitude</label>
+		      			<input type="text" class="form-control" id="longitude" placeholder="4.224807" name="longitude" value="<?=$lieu->longitude()?>">
+		    		</div>
+		    		<div class="col-md-12 mb-3">
+		  				<button class="btn btn-primary btn-lg btn-block" type="submit">Modifier</button>
+		  			</div>
+		  		</div>
+		  	</div>
+		</form>	 
+  
+			<div class="form-row1">
+				<input type="hidden" id="lattitude" name="lattitude" value="<?=$lieu->lattitude()?>">
+				<input type="hidden" id="longitude" name="longitude" value="<?=$lieu->longitude()?>">
+		  	</div>
+		
+		<div id="map">
+	  <!--   Ici s'affichera la carte --> 	
+		</div>
+	</div>
+<?
+}
 ?>
 
 <!-- Fichiers Javascript OpenStreetMap-->
@@ -224,12 +332,12 @@ elseif (isset($id)&&(!isset($new))) {
             // Fonction d'initialisation de la carte
             function initMap() {
                 // Créer l'objet "macarte" et l'insèrer dans l'élément HTML qui a l'ID "map"
-                macarte = L.map('map').setView([lat, lon], 11);
+                macarte = L.map('map').setView([lat, lon], 10);
                 // Leaflet ne récupère pas les cartes (tiles) sur un serveur par défaut. Nous devons lui préciser où nous souhaitons les récupérer. Ici, openstreetmap.fr
                 L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
                     // Il est toujours bien de laisser le lien vers la source des données
                     attribution: 'données © <a href="//osm.org/copyright">OpenStreetMap</a>/ODbL - rendu <a href="//openstreetmap.fr">OSM France</a>',
-                    minZoom: 13,
+                    minZoom: 5,
                     maxZoom: 20
                 }).addTo(macarte);
             }

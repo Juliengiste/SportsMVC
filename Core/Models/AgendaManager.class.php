@@ -34,11 +34,13 @@ class AgendaManager extends Manager {
 	}
 
 	public function addLieu($data){
-		$q=$this->db->prepare('INSERT INTO `'.$this->table_l.'` (nom_lieu, adresse, cp, ville) VALUES (:nom_lieu, :adresse, :cp, :ville);');
+		$q=$this->db->prepare('INSERT INTO `'.$this->table_l.'` (nom_lieu, adresse, cp, ville, lattitude, longitude) VALUES (:nom_lieu, :adresse, :cp, :ville, :lattitude, :longitude);');
 		$q->bindValue(':nom_lieu', $data->nom_lieu(), PDO::PARAM_STR);
 		$q->bindValue(':adresse', $data->adresse(), PDO::PARAM_STR);
 		$q->bindValue(':cp', $data->cp(), PDO::PARAM_INT);
 		$q->bindValue(':ville', $data->ville(), PDO::PARAM_STR);
+		$q->bindValue(':lattitude', $data->lattitude(), PDO::PARAM_STR);
+		$q->bindValue(':longitude', $data->longitude(), PDO::PARAM_STR);
 		$q->execute();
 	}
 
@@ -48,6 +50,8 @@ class AgendaManager extends Manager {
 		$q->bindValue(':adresse', $data->adresse(), PDO::PARAM_STR);
 		$q->bindValue(':cp', $data->cp(), PDO::PARAM_INT);
 		$q->bindValue(':ville', $data->ville(), PDO::PARAM_STR);
+		$q->bindValue(':lattitude', $data->lattitude(), PDO::PARAM_STR);
+		$q->bindValue(':longitude', $data->longitude(), PDO::PARAM_STR);
 		$q->bindValue(':id', $data->idlieu(), PDO::PARAM_INT);
 		$q->execute();
 

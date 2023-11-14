@@ -17,6 +17,7 @@ abstract class Manager {
 	protected $metier;
 	
 	protected $errorMessage;
+
 	
 	/* pagination */
 	protected $max = 10;
@@ -68,5 +69,4 @@ abstract class Manager {
 		$this->metier = '\Core\Models\\' . ucfirst($tab);
 		return new $this->metier;
 	}
-
 }

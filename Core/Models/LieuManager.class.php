@@ -10,6 +10,7 @@ use \Core\Models\Lieu;
 
 class LieuManager extends Manager {
 	protected $table = "lieu";
+	protected $lstable = "lieu_sport";
 	protected $pk = "idlieu";
 
 	/**
@@ -34,12 +35,13 @@ class LieuManager extends Manager {
 	}
 
 	public function updateLieu($data){
-		$q=$this->db->prepare('UPDATE `'.$this->table.'` SET nom_lieu=:nom_lieu, adresse=:adresse, cp=:cp, ville=:ville WHERE `' . $this->pk . '`=:id;');
+		$q=$this->db->prepare('UPDATE `'.$this->table.'` SET nom_lieu=:nom_lieu, adresse=:adresse, cp=:cp, ville=:ville, lattitude=:lattitude, longitude=:longitude WHERE `' . $this->pk . '`=:id;');
 		$q->bindValue(':nom_lieu', $data->nom_lieu(), PDO::PARAM_STR);
 		$q->bindValue(':adresse', $data->adresse(), PDO::PARAM_STR);
 		$q->bindValue(':cp', $data->cp(), PDO::PARAM_STR);
 		$q->bindValue(':ville', $data->ville(), PDO::PARAM_STR);
-		//$q->bindValue(':description', $data->description(), PDO::PARAM_STR);
+		$q->bindValue(':lattitude', $data->lattitude(), PDO::PARAM_STR);
+		$q->bindValue(':longitude', $data->longitude(), PDO::PARAM_STR);
 		$q->bindValue(':id', $data->idlieu(), PDO::PARAM_INT);
 		$q->execute();
 
@@ -67,5 +69,33 @@ class LieuManager extends Manager {
 	    }
 
 	    return $lieuObjects;
+	}
+
+	public function supp($id, $tab){
+		$q=$this->db->prepare('DELETE `'.$this->table.'` SET idlieu=:idlieu, idsport=:idsport WHERE `' . $this->pk . '`=:id;');
+		$this->delete($id, $tab);
+	}
+
+	public function exists($id, $table) {
+	    $q = $this->db->prepare('SELECT COUNT(*) as count FROM ' . $table . ' WHERE ' . $this->pk . ' = :id');
+	    $q->bindValue(':id', $id, PDO::PARAM_INT);
+	    $q->execute();
+
+	    $result = $q->fetch(PDO::FETCH_ASSOC);
+
+	    return ($result['count'] > 0);
+	}
+
+	protected function deleteLS(int $id, $tab) {
+	    // Assuming $id is the ID of the record you want to delete
+
+	    // Step 1: Delete from associated tables with foreign key constraints (e.g., lieu_sport)
+	    if ($tab == 'lieu') {
+	        $this->db->query("DELETE FROM `lieu_sport` WHERE `idlieu`=" . $id . "AND `id_sport`=" . $idSport);
+	    }
+
+	    // Step 2: Delete from the main table
+	    $this->metier = '\Core\Models\\' . ucfirst($tab);
+	    $this->db->query("DELETE FROM `" . $tab . "` WHERE `id" . $tab . "`=" . $id);
 	}
 }
