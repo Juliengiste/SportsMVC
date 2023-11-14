@@ -488,6 +488,7 @@ body {
 <?
 $id = \Core\Classes\Utils::secureGet('id');
 $smanager = new Core\Models\SportManager($pdo);
+$lieumanager = new Core\Models\LieuManager($pdo);
 
 if(isset($_SESSION[SHORTNAME.'_user'])) $me = $_SESSION[SHORTNAME.'_user'];
 if(isset($me)){
@@ -636,14 +637,16 @@ if(isset($me)){
               <ul>
                 </li>
                 <? 
-                  $sort = \Core\Classes\Utils::secureGet('sort',"idsport");
+                  $sort = \Core\Classes\Utils::secureGet('sort',"nom_lieu");
                   $tri = \Core\Classes\Utils::secureGet('tri',"asc");
-                  $sportList = $smanager->getList($sort,$tri,"sport");
-                    if(is_array($sportList)){
-                      foreach ($sportList as $sport) {
+                  $invtri = ($tri=="asc")?"desc":"asc";
+                  $lieuList = $lieumanager->getList($sort,$tri,"lieu");
+                    if(is_array($lieuList)){
+                      foreach ($lieuList as $lieu) {
+                        $idLieu = $lieu->idlieu();
                         ?>
                         <li>
-                         <a href="lieu/<?=$sport->idsport()?>"><?=$sport->nom_sport()?></a>
+                         <a href="lieu/<?echo($idLieu);?>"><?=$lieu->nom_lieu()?></a>
                         </li>     
                         <?
                       }
