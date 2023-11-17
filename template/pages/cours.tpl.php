@@ -198,16 +198,28 @@ p {
 <?
 $id = Core\Classes\Utils::secureGet('id');
 $new = Core\Classes\Utils::secureGet('new');
+$cmanager = new Core\Models\CoursManager($pdo);
 
 if(isset($_SESSION[SHORTNAME.'_user'])) $me = $_SESSION[SHORTNAME.'_user'];
 setlocale(LC_TIME, ['fr', 'fra', 'fr_FR']);
 
 $smanager = new Core\Models\SportManager($pdo);
 $listsport = $smanager->getList('nom_sport', 'asc', 'sport');
+$newcours = NULL;
 
 if((count($_POST) != 0 )&&($_POST["form_id"]=="NULL")){
 // Formulaire rempli et envoyé au serveur
   var_dump($_POST);
+  $newcours = $cmanager->new("cours");
+  //$newcours->setIdcours($_POST['nom_sport']);
+  $newcours->setNbplace($_POST['form_nbplace']);
+  //$newcours->setType_sco_vac($_POST['form_sport']);
+  $newcours->setHeure_debut($_POST['form_heure_debut']);
+  $newcours->setDuree($_POST['form_duree']);
+  //$newcours->setDate($_POST['']);
+  //$newcours->setCadre($_POST['']);
+  $newcours->setSport($_POST['form_sport']);
+  $cmanager->addCours($newcours);
 }
 if(isset($id)&&(!isset($new))){
 // Affichage quand un cours est selectionné 
@@ -244,10 +256,10 @@ else{
       <h3>Sélection du créneau</h3>
       <div id="date"><!--Remplissage de la div via JS--></div>
       <div id="heure">
-        <label>Heure du cours</label>
+        <label for="heure_debut">Heure du cours</label>
         <input type="time" name="heure_debut" id="heure_debut">
         <div class="form-row">
-          <label class="col-md-2">Durée</label>
+          <label for="duree" class="col-md-2">Durée</label>
           <input class="col-md-8" type="range" name="duree" id="duree" min="0" max="180" step="30" value="60" onchange="updateTextInput(this.value);">
           <input class="col-md-2" type="text" id="textInput" value="60" style="border-bottom: none;">
         </div>
@@ -379,7 +391,7 @@ $(document).ready(function() {
             $p->execute();
             $data = $p->fetch(PDO::FETCH_ASSOC);
             $annee = $data['idanneescolaire'];
-            $q=$pdo->prepare('SELECT * FROM `disponibilite` JOIN `autorise` ON `disponibilite`.`iddisponibilte`=`autorise`.`disponibilte_iddisponibilte` JOIN `lieu` ON `disponibilite`.`lieu` = `lieu`.`idlieu` WHERE `annee_scolaire`=:annee AND `sport_idsport`=:idsport AND `duree` IS NOT NULL;');
+            $q=$pdo->prepare('SELECT * FROM `disponibilite` JOIN `autorise` ON `disponibilite`.`iddisponibilite`=`autorise`.`disponibilte_iddisponibilte` JOIN `lieu` ON `disponibilite`.`lieu` = `lieu`.`idlieu` WHERE `annee_scolaire`=:annee AND `sport_idsport`=:idsport AND `duree` IS NOT NULL;');
             $q->bindValue(":annee", $annee, PDO::PARAM_INT);
             $q->bindValue(":idsport", $donnees['idsport'], PDO::PARAM_INT);
             $q->execute();

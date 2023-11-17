@@ -1,6 +1,6 @@
 <style type="text/css">
 .sidebar-wrapper {
-  margin-top: 150px;
+  margin-top: 60px;
 }
  @keyframes swing {
   0% {
@@ -109,7 +109,7 @@ body {
 .sidebar-wrapper {
   font-family: "Font Awesome 5 Free";
   width: 260px;
-  height: 100%;
+  height: calc(100% - 60px);
   max-height: 100%;
   position: fixed;
   top: 0;
@@ -532,7 +532,7 @@ if(isset($me)){
       <div class="sidebar-search">
         <div>
           <div class="input-group">
-            <input type="text" class="form-control search-menu" placeholder="Search...">
+            <input type="text" class="form-control search-menu" id="searchbar" placeholder="Search...">
             <div class="input-group-append">
               <span class="input-group-text">
                 <i class="fa fa-search" aria-hidden="true"></i>
@@ -555,7 +555,7 @@ if(isset($me)){
             <div class="sidebar-submenu">
               <ul>
                 <li>
-                  <a href="">Mes séances sport</a>
+                  <a href="dashboard">Mes séances sport</a>
                 </li>
                 <li>
                   <a href="">Gestion du planning
@@ -683,7 +683,7 @@ if(isset($me)){
             <span>Extras</span>
           </li>
           <li>
-            <a href="#">
+            <a href="actions">
               <i class="fa fa-book"></i>
               <span>Documentation</span>
               <span class="badge badge-pill badge-primary">Beta</span>

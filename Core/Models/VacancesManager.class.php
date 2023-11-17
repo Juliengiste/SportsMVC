@@ -7,6 +7,7 @@ namespace Core\Models;
 
 use PDO;
 use \Core\Models\Vacances;
+use \Core\Models\Anneescolaire;
 
 class VacancesManager extends Manager {
 	protected $table = "vacances";

@@ -3,10 +3,11 @@ Version : 1.0.0.0
 Revised : vendredi 17 novembre 2017, 12:51:48 (UTC+0100)
 *******************************/
 
-/*body {
+body {
 	font-family: 'Lato', 'Lato_fallback', serif;
 	font-size:15px;
 	font-weight: 400;
+	 margin-top: 60px;
 }
 
  header 
@@ -19,7 +20,7 @@ Revised : vendredi 17 novembre 2017, 12:51:48 (UTC+0100)
   position: fixed;
   top: 0;
 
-*/
+}
 
 
 
@@ -28,19 +29,15 @@ Revised : vendredi 17 novembre 2017, 12:51:48 (UTC+0100)
 
 /* content */
 
-#content {
-    margin-top: 150px !important; 
-}
 /* footer */
 
 /* Generic */
 
 @font-face {
-	font-family: 'Lato_fallback';
+	font-family: 'LuggerBug';
 	font-style: normal;
 	font-weight: 400;
-	src: url('../fonts/lato-regular-webfont.woff2') format('woff2'),
-		 url('../fonts/lato-regular-webfont.woff') format('woff');
+	src: url('../fonts/LuggerBug.ttf') format('ttf');
 }
 
 /* Print */

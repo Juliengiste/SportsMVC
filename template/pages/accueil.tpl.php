@@ -47,6 +47,11 @@ table {
 		sans-serif;
 } */
 
+.date-title {
+        display: inline;
+        margin-right: 10px; /* Espacez les titres de date si nécessaire */
+    }
+
 .default-cursor {
 	cursor: default;
 }
@@ -76,8 +81,8 @@ table {
 }
 
 #current-day-info {
-	min-height: 100vh;
-	width: 34%;
+	min-height: 5vh;
+	width: 100%;
 }
 
 #current-day-info #app-name-landscape {
@@ -106,20 +111,20 @@ table {
 #current-day-info h2 {
 	font-size: 6.2vh;
 	font-weight: 300;
-	margin: 0 0 3vh;
+	margin: 0 0 1vh;
 	padding-top: 3vh;
 }
 
 #current-day-info h1 {
 	font-size: 6.8vh;
 	font-weight: 600;
-	margin: 4.3vh 0;
+	margin: 1vh 0;
 }
 
 #current-day-info #theme-landscape,
 #calender #theme-portrait {
 	display: block;
-	padding: 3vh 4vh;
+	padding: 1vh 1vh;
 	box-shadow: #a9a7a7 0px 0px 91px -5px;
 	/* padding: 16px 38px; */
 	color: #d2cdcd;
@@ -136,8 +141,8 @@ table {
 }
 
 #calender {
-	width: 66%;
-	min-height: 100vh;
+	width: 100%;
+	min-height: 45vh;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-around;
@@ -169,7 +174,7 @@ table {
 #calender h3 {
 	font-size: 2vw;
 	font-weight: 700;
-	padding: 0 2vw;
+	padding: 0 1vw;
 	margin: 0;
 	display: inline-block;
 }
@@ -483,7 +488,7 @@ table {
 		height: 13vh;
 		width: 100%;
 		/* display: none; */
-		padding: 2vw 0;
+		padding: 1vw 0;
 		display: flex;
 		flex-direction: column;
 		/* justify-content: space-between; */
@@ -513,7 +518,7 @@ table {
 	}
 
 	#current-day-info #app-name-landscape {
-		padding: 3vh 0 1vh;
+		padding: 1vh 0 1vh;
 		border-bottom: 1px solid;
 		display: none;
 		color: white;
@@ -539,7 +544,7 @@ table {
 	#calender #theme-portrait {
 		display: block;
 		/* padding: 3vw 25vw; */
-		width: 75%;
+		width: 100%;
 		border-radius: 100px;
 	}
 
@@ -640,38 +645,57 @@ if(isset($_SESSION[SHORTNAME.'_user'])) $me = $_SESSION[SHORTNAME.'_user'];
                 <h1>L'association Sédélocienne Multi Sports</h1>
                 <p>Superbe association créée au 4ème siècle avant JC. Possibilité de jouer au tennis de table, au badminton et au volley. De nombreuses séances sont disponibles sur inscription. Les inscriptions sont obligatoires dans le but d'avoir un suivi des participants.</p>
             </article>
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	<section class="row">
             <!-- calendar -->
-           	<div id="current-day-info" class="color col-md-4">
-				<h1 id="app-name-landscape" class="off-color center default-cursor">
-			Calendrier
-				</h1>
+           	<div id="current-day-info" class="color col-md-12">
+				<h3 id="app-name-landscape" class="off-color center default-cursor">
+			Agenda
+				</h3>
 
 				<div>
-					<h2 id="current-year" class="center default-cursor">2021</h2>
+					
 				</div>
 
-				<div>
-					<h1 id="cur-day" class="current-day-heading center default-cursor">
-						Lundi
-					</h1>
-					<h1 id="cur-month" class="current-month-heading center default-cursor">
-						Juin
-					</h1>
-					<h1 id="cur-date" class="current-date-heading center default-cursor">
-						7
-					</h1>
+				<div class="color center">
+					<h3 class="date-title" id="cur-day" class="current-day-heading center default-cursor"></h3>
+				    <h3 class="date-title" id="cur-date" class="current-date-heading center default-cursor"></h3>
+				    <h3 class="date-title" id="cur-month" class="current-month-heading center default-cursor"></h3>
+				    <h3 class="date-title" id="current-year" class="center default-cursor "></h3>
 				</div>
-
-				<div class="time">
-					<span> 22 </span>: <span> 55 </span>:
-					<span> 23 </span>
-				</div>
-
-				<button id="theme-landscape" class="font btn">Change Theme</button>
+			<!--	<button id="theme-landscape" class="font btn">Change Theme</button>-->
 			</div>
 
-	<div class="color col-md-8" id="calender">
+	<div class="color col-md-12" id="calender">
 		<h1 id="app-name-portrait" class="center ">Cal</h1>
 		<!-- h1 'off-color' class was removed -->
 		<table>
@@ -761,82 +785,6 @@ if(isset($_SESSION[SHORTNAME.'_user'])) $me = $_SESSION[SHORTNAME.'_user'];
 		</table>
 		<button id="theme-portrait" class="font btn">Change Theme</button>
 	</div>
-
-	<div class="modal">
-		<div id="fav-color" hidden>
-			<div class="popup">
-				<h4>whats your favorite color ?</h4>
-
-				<div id="color-options">
-					<div class="color-option">
-						<div class="color-preview" id="blue" style="background-color: #1B19CD;">
-							<!-- <i class="fas fa-check checkmark"></i> -->
-						</div>
-						<h5>Blue</h5>
-					</div>
-
-					<div class="color-option">
-						<div class="color-preview" id="red" style="background-color: #D01212;"></div>
-						<h5>Red</h5>
-					</div>
-
-					<div class="color-option">
-						<div class="color-preview" id="purple" style="background-color: #721D89;"></div>
-						<h5>Purple</h5>
-					</div>
-
-					<div class="color-option">
-						<div class="color-preview" id="green" style="background-color: #158348;"></div>
-						<h5>Green</h5>
-					</div>
-
-					<div class="color-option">
-						<div class="color-preview" id="orange" style="background-color: #EE742D;"></div>
-						<h5>Orange</h5>
-					</div>
-
-					<div class="color-option">
-						<div class="color-preview" id="deep-orange" style="background-color: #F13C26;"></div>
-						<h5>Deep Orange</h5>
-					</div>
-
-					<div class="color-option">
-						<div class="color-preview" id="baby-blue" style="background-color: #31B2FC;"></div>
-						<h5>Baby Blue</h5>
-					</div>
-
-					<div class="color-option">
-						<div class="color-preview" id="cerise" style="background-color: #EA3D69;"></div>
-						<h5>Cerise</h5>
-					</div>
-
-					<div class="color-option">
-						<div class="color-preview" id="lime" style="background-color: #36C945;"></div>
-						<h5>Lime</h5>
-					</div>
-
-					<div class="color-option">
-						<div class="color-preview" id="teal" style="background-color: #2FCCB9;"></div>
-						<h5>Teal</h5>
-					</div>
-
-					<div class="color-option">
-						<div class="color-preview" id="pink" style="background-color: #F50D7A;"></div>
-						<h5>Pink</h5>
-					</div>
-
-					<div class="color-option">
-						<div class="color-preview" id="black" style="background-color: #212524;"></div>
-						<h5>Black</h5>
-					</div>
-				</div>
-
-				<button id="update-theme-button" class="font btn color">
-					Update Theme
-				</button>
-			</div>
-		</div>
-
 		<div id="make-note" hidden>
 			<div class="popup">
 				<h4> <span class="verb"></span> note on <span id="noteDate">2019 12 5</span></h4>
@@ -882,32 +830,32 @@ if(isset($_SESSION[SHORTNAME.'_user'])) $me = $_SESSION[SHORTNAME.'_user'];
 	popup = document.querySelector(".popup"),
 	noteModal = document.getElementById("make-note");
 
-document.querySelector(".fa-caret-left").addEventListener("click", nextMonth);
-document.querySelector(".fa-caret-right").addEventListener("click", prevMonth);
+document.querySelector(".fa-caret-left").addEventListener("click", prevMonth);
+document.querySelector(".fa-caret-right").addEventListener("click", nextMonth);
 
 const now = new Date();
 //for testing purposes use 'let' instead of 'const'
-const todayDay = now.getDay(),
+let todayDay = now.getDay(),
 	todayDate = now.getDate(),
 	todayMonth = now.getMonth(),
 	todayYear = now.getFullYear();
 
-const state = {
+let state = {
 	todayDay,
 	todayDate,
 	todayMonth,
 	todayYear
 };
-const daysStr = {
-	0: "Sun",
-	1: "Mon",
-	2: "Tue",
-	3: "Wed",
-	4: "Thu",
-	5: "Fri",
-	6: "Sat"
+let daysStr = {
+	0: "Dimanche",
+	1: "Lundi",
+	2: "Mardi",
+	3: "Mercredi",
+	4: "Jeudi",
+	5: "Vendredi",
+	6: "Samedi"
 };
-const daysIndex = {
+let daysIndex = {
 	Sun: 0,
 	Mon: 1,
 	Tue: 2,
@@ -916,7 +864,7 @@ const daysIndex = {
 	Fri: 5,
 	Sat: 6
 };
-const monthsStr = {
+let monthsStr = {
 	0: "Jan",
 	1: "Feb",
 	2: "Mar",
@@ -930,7 +878,7 @@ const monthsStr = {
 	10: "Nov",
 	11: "Dec"
 };
-const monthsIndex = {
+let monthsIndex = {
 	Jan: 0,
 	Feb: 1,
 	Mar: 2,
@@ -944,7 +892,7 @@ const monthsIndex = {
 	Nov: 10,
 	Dec: 11
 };
-const color_data = [
+let color_data = [
 	{
 		id: 0,
 		name: "blue",
@@ -1365,32 +1313,6 @@ calenderYearDOM.addEventListener("input", e => {
 	}
 });
 
-document
-	.getElementById("theme-landscape")
-	.addEventListener("click", changeColorTheme);
-document
-	.getElementById("theme-portrait")
-	.addEventListener("click", changeColorTheme);
-
-let newColorPrefrence;
-modal.addEventListener("click", e => {
-	let ele = e.target.classList;
-
-	if (ele[0] === "modal" || ele[0] === "fade-in") {
-		closeModal();
-	} else if (ele[0] === "color-preview") {
-		const siblings = e.target.parentElement.parentElement;
-		for (let i = 0; i < siblings.children.length; i++) {
-			const element = siblings.children[i].firstElementChild;
-			element.classList.remove("selectedColor");
-		}
-		if (e.target.parentElement.classList[0] === "color-option") {
-			newColorPrefrence = e.target.id;
-		}
-		ele.add("selectedColor");
-	}
-});
-
 let isModalOpen = false;
 
 function openModal(isNote = false) {
@@ -1408,46 +1330,12 @@ function closeModal() {
 	isModalOpen = false;
 	popup.classList.remove("fade-in");
 	popup.classList.add("fade-out");
-	modal.style.display = "none";
-	noteModal.style.display = "none";
-	colorModal.style.display = "none";
 	deleteBtnInPopup.style.display = "inline";
 	noteTitleInput.value = "";
 	noteContentInput.value = "";
 	document.getElementById("warning").innerHTML = "";
 }
 
-function changeColorTheme() {
-	openModal();
-	seletectChosenColor();
-}
-
-seletectChosenColor();
-
-function seletectChosenColor() {
-	const colorsOptions = document.getElementById("color-options").children;
-	for (let i = 0; i < colorsOptions.length; i++) {
-		const currentChild = colorsOptions[i].firstElementChild;
-
-		if (currentColor.name == currentChild.id) {
-			currentChild.innerHTML = "<i class='fas fa-check checkmark'></i>";
-		} else {
-			currentChild.innerHTML = "";
-		}
-	}
-}
-document.getElementById("update-theme-button").addEventListener("click", () => {
-	const chosenColor = color_data.filter(
-		color => color.name === newColorPrefrence
-	);
-	currentColor = chosenColor[0];
-	document.getElementById("theme-portrait").style.backgroundColor =
-		currentColor.value;
-	updateLocalStorage();
-	printMonthCalendarInDOM();
-	applyTheme();
-	closeModal();
-});
 
 //Create,Read,Update Delete a Note!
 //this is event delegation where we select a parent container that will have new cells
@@ -1592,67 +1480,6 @@ deleteBtnInPopup.addEventListener("click", () => {
 	updateLocalStorage();
 	closeModal(true);
 	printMonthCalendarInDOM();
-});
-
-//mini clock 12 and 24 timing
-let is24hours = true;
-let intervalState;
-function makeClockTikTok() {
-	intervalState = setInterval(() => {
-		let hours = new Date().getHours();
-		const minutes = new Date().getMinutes();
-		const seconds = new Date().getSeconds();
-		// console.log("seconds:", seconds);
-		let in12hours = 12;
-		let dayState = "AM";
-
-		if (hours > 0 && hours < 12) {
-			in12hours = hours;
-		} else if (hours !== 0) {
-			if (hours === 12) {
-				hours += 12;
-			}
-			in12hours = hours - 12;
-			dayState = "PM";
-		}
-
-		if (is24hours) {
-			hours = in12hours;
-		}
-		const timeTemplate = `
-		<span>${hours > 9 ? hours : "0" + hours} </span>:
-		<span>${minutes > 9 ? minutes : "0" + minutes} </span>:
-		<span>${seconds > 9 ? seconds : "0" + seconds}</span>
-		<span>${is24hours ? dayState : ""}</span>
-		`;
-		document.querySelector(".time").innerHTML = timeTemplate;
-	}, 1000);
-}
-document
-	.querySelector(".time")
-	.addEventListener(
-		"click",
-		() => ((is24hours = !is24hours), makeClockTikTok())
-	);
-
-//to stop the calculating time if it is on orientation mode
-var mql = window.matchMedia("(orientation: portrait)");
-//if the user launched this app while on portrait mode
-if (!mql.matches) {
-	makeClockTikTok();
-}
-
-// Add a media query change listener
-mql.addListener(function(m) {
-	if (m.matches) {
-		// Changed to portrait
-		console.log("portrait mode");
-		clearInterval(intervalState);
-	} else {
-		// Changed to landscape
-		console.log("landscape mode");
-		makeClockTikTok();
-	}
 });
 
 //things i regret about this project:

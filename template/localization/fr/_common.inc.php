@@ -17,8 +17,8 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	// META
-	'META_TITR_ACCUEIL'			=> 'IDLP : La distribution maîtrisée... depuis 1946',
-	'META_DESC_ACCUEIL'			=> 'Stock multimarque mutualisé, Pièces d’origine référencées, Gestion moteur calibrée, Expertise technique certifiée',
+	'META_TITR_ACCUEIL'			=> 'LudiQ ... développement par Julien Maignaut',
+	'META_DESC_ACCUEIL'			=> 'Site web test pour portfolio',
 	'META_TITR_CONTACT'			=> 'Une question, un conseil, contactez nous !',
 	'META_DESC_CONTACT'			=> 'Notre équipe se tient à votre disposition à tout moment, pour vous renseigner ou vous conseiller. Contactez-nous sans attendre !',
 

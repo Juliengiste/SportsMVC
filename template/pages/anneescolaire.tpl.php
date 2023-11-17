@@ -14,7 +14,7 @@ if((count($_POST) != 0 )&&($_POST["id"]=="NULL")){
 	$newvac->setLabel($_POST['label']);
 	$newvac->setDate_debut($_POST['date_debut']);
 	$newvac->setDate_fin($_POST['date_fin']);
-	$affichernewVac = $asmanager->addAnneescolaire($newvac);
+	$affichernewVac = $asmanager->addAnnee_scolaire($newvac);
 	$id = NULL;
 	$new = NULL;
 	//header($original);
@@ -117,7 +117,7 @@ else{
 	$sort = \Core\Classes\Utils::secureGet('sort',"label");
 	$tri = \Core\Classes\Utils::secureGet('tri',"asc");
 	$invtri = ($tri=="asc")?"desc":"asc";
-	$anneescolist = $vmanager->getList($sort,$tri, "anneescolaire");
+	$anneescolist = $asmanager->getList($sort,$tri, "anneescolaire");
 	?>
 <div class="container justify-content-center" id="form">
 	<form class="container justify-content-center" method="post">
@@ -128,7 +128,7 @@ else{
 			<br><br>
 				<div class="form-group col-md-12">
 					<label>Nom de l'Année scolaire</label> 								
-					<input type="text" class="form-control" id="label" name="label" placeholder="Exemple: Vacances de Noël">
+					<input type="text" class="form-control" id="label" name="label" placeholder="Exemple: Année 2099/2100">
 				</div>
 				<div class="form-group col-md-6">
 					<label>Date de début</label> 

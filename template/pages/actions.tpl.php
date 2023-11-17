@@ -140,31 +140,31 @@ if(isset($_SESSION[SHORTNAME.'_user'])) $me = $_SESSION[SHORTNAME.'_user'];
 	    <div class="col-sm">
 	       <h2>Adhérents</h2>
 	     	<p>
-				<button class="btn btn-primary btn-lg btn-block" type="button" data-toggle="collapse" data-target="#collapsecreerplanning" aria-expanded="false" aria-controls="collapsecreerplanning">
+				<button class="btn btn-primary btn-lg btn-block" type="button" data-toggle="collapse" data-target="#collapsecreeradherents" aria-expanded="false" aria-controls="collapsecreeradherents">
 			    Créer un adhérent
 				</button>
 			</p>
-			<div class="collapse" id="collapsecreerplanning">
+			<div class="collapse" id="collapsecreeradherents">
 				<div class="card card-body">
 			    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
 				</div>
 			</div>
 		    <p>
-				<button class="btn btn-primary btn-lg btn-block" type="button" data-toggle="collapse" data-target="#collapseModifierplanning" aria-expanded="false" aria-controls="collapseModifierplanning">
+				<button class="btn btn-primary btn-lg btn-block" type="button" data-toggle="collapse" data-target="#collapseModifieradherents" aria-expanded="false" aria-controls="collapseModifieradherents">
 			    Modifier un adhérent
 				</button>
 			</p>
-			<div class="collapse" id="collapseModifierplanning">
+			<div class="collapse" id="collapseModifieradherents">
 				<div class="card card-body">
 			    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
 				</div>
 			</div>
 			<p>
-				<button class="btn btn-primary btn-lg btn-block" type="button" data-toggle="collapse" data-target="#collapseEffacerplanning" aria-expanded="false" aria-controls="collapseEffacerplanning">
+				<button class="btn btn-primary btn-lg btn-block" type="button" data-toggle="collapse" data-target="#collapseEffaceradherents" aria-expanded="false" aria-controls="collapseEffaceradherents">
 			    Supprimer un adhérent
 				</button>
 			</p>
-			<div class="collapse" id="collapseEffacerplanning">
+			<div class="collapse" id="collapseEffaceradherents">
 				<div class="card card-body">
 			    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
 				</div>

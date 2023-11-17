@@ -83,6 +83,7 @@ input:checked + .slider:before {
 <?php
 $id = Core\Classes\Utils::secureGet('id');
 $new = Core\Classes\Utils::secureGet('new');
+$supp = \Core\Classes\Utils::secureGet('supp');
 $dmanager = new Core\Models\AgendaManager($pdo);
 $smanager = new Core\Models\SportManager($pdo);
 $listjour = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
@@ -93,6 +94,21 @@ Revised : jeudi 19 avril 2018, 16:49:24 (UTC+0200)
 *******************************/
 if(isset($_SESSION[SHORTNAME.'_user'])) $me = $_SESSION[SHORTNAME.'_user'];
 setlocale(LC_TIME, ['fr', 'fra', 'fr_FR']);
+
+if (isset($supp)){
+ 	if ($dmanager->get($id, "disponibilite")) {
+ 		$iddispo=$id;
+ 		//supprimer le lieu
+ 		$dmanager->supp($id, "disponibilite");
+
+	    $id = NULL;
+	    $supp = NULL;
+	} else {
+	    echo("erreur -> il n'y a pas de dispo pour cet ID.");
+	}
+	header("Location: /disponibilites");
+    		exit();
+ }
 
 if((count($_POST) != 0 )&&($_POST["id"]=="NULL")){
 	$parent = false;
@@ -168,47 +184,75 @@ elseif(!isset($id)&&(!isset($new))){
 ?>
 <main>
 	<div class="container">
-		<h2>Liste des crénaux disponibles selon les Années scolaires</h2>
+		<h2>Liste des crénaux disponibles</h2>
 		<a class="text-dark" href="disponibilites/?new=1">
 			<button class="btn btn-primary"><i class="fas fa-plus-circle"></i> Ajout Disponibilités</button>
 		</a>
 		<br><br>
-		<?
-		foreach ($anneelist as $annee) {
-		?>
-		<div class="card text-center">
-			<div class="card-header">
-				<?=$annee->label()?>
-			</div>
-			<?
-			foreach ($listjour as $jour) {
-				$dispolist = $dmanager->getDispoJour($annee->idanneescolaire(), $jour);
-				if (!empty($dispolist)){
-				?>
-				<div class="card-header">
-					<?=$jour?>
-				</div>
-				<?
-					foreach ($dispolist as $dispo) {
-						$minute = $dispo->duree();
-						$lieu = $dmanager->get($dispo->lieu(), "lieu");
-						echo "<div class='row'><div class=\"card-body\"><h4>Heure de début</h4>
-		  					".$dispo->heure_debut()."
-			  			</div><div class=\"card-body\"><h4>Heure de fin</h4>
-		  					".date("H:i:s",strtotime($dispo->heure_debut()."+$minute minutes"))."
-			  			</div><div class=\"card-body\"><h4>Lieu</h4>
-		  					".$lieu->nom_lieu()."
-			  			</div></div>";
-					}
-				?>
-				
-				<?
-				}
-			}
-			echo"</div><br><br>";
-		}
-		?>
-	</div>
+		<div id="accordion">
+    <?php foreach ($anneelist as $annee) : ?>
+        <div class="card">
+            <div class="card-header" id="heading<?= $annee->idanneescolaire() ?>">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse<?= $annee->idanneescolaire() ?>" aria-expanded="true" aria-controls="collapse<?= $annee->idanneescolaire() ?>">
+                        <?= $annee->label() ?>
+                    </button>
+                </h5>
+            </div>
+
+            <div id="collapse<?= $annee->idanneescolaire() ?>" class="collapse" aria-labelledby="heading<?= $annee->idanneescolaire() ?>" data-parent="#accordion">
+                <div class="card-body">
+                    <?php foreach ($listjour as $jour) : ?>
+                        <?php
+                        $dispolist = $dmanager->getDispoJour($annee->idanneescolaire(), $jour);
+                        if (!empty($dispolist)) :
+                        ?>
+                            <div class="card">
+                                <div class="card-header" id="heading<?= $annee->idanneescolaire() . $jour ?>">
+                                    <h5 class="mb-0">
+                                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapse<?= $annee->idanneescolaire() . $jour ?>" aria-expanded="true" aria-controls="collapse<?= $annee->idanneescolaire() . $jour ?>">
+                                            Voir les créneaux du <?= $jour ?>
+                                        </button>
+                                    </h5>
+                                </div>
+
+                                <div id="collapse<?= $annee->idanneescolaire() . $jour ?>" class="collapse" aria-labelledby="heading<?= $annee->idanneescolaire() . $jour ?>" data-parent="#collapse<?= $annee->idanneescolaire() ?>">
+                                    <div class="card-body">
+                                        <?php foreach ($dispolist as $dispo) : ?>
+                                            <?php
+                                            $minute = $dispo->duree();
+                                            $lieu = $dmanager->get($dispo->lieu(), "lieu");
+                                            ?>
+                                            <table class="table">
+                                                <tr>
+                                                    <td>
+                                                        <h4>Heure de début</h4><?= $dispo->heure_debut() ?>
+                                                    </td>
+                                                    <td>
+                                                        <h4>Heure de fin</h4><?= date("H:i:s", strtotime($dispo->heure_debut() . "+$minute minutes")) ?>
+                                                    </td>
+                                                    <td>
+                                                        <h4>Lieu</h4><?= $lieu->nom_lieu() ?>
+                                                    </td>
+                                                    <td>
+                                                        <button class='btn btn-warning' name=''>Modifier</button>
+                                                      <a href="disponibilites/?id=<?=$dispo->iddisponibilite()?>&supp=1">
+																												<button class="btn btn-danger"><i class="fas fa-trash"></i></button>
+																											</a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+</div>
 </main>
 <?}
 else{
